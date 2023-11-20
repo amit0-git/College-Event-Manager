@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF</title>
+</head>
+
+<body>
+
+  <div id="header">
+    Press <i>Ctrl+P</i> to print the form.
+  </div>
+  <div id="pdf">
+    <div id="pdfWrapper">
+      <div id="collegeHeader">
+        <div id="collegeName">Shri Ram Murti Smarak College of Engineering & Technology, Bareilly(243202)</div>
+        <hr>
+        <div id="zest">ZEST 2K23</div>
+      </div>
+
+
+
+      <% if (individualData){ %>
+
+      <div id="personalInfo">
+        <span id="pid-head"><strong>PID</strong></span>
+        <span id="pid-data"><strong><%= individualData['pid'] %></strong></span><br>
+        <span id="head">Roll No</span>
+        <span id="data"><%= individualData['rollno'] %></span><br>
+        <span id="head">Name</span>
+        <span id="data"><%= individualData['name'] %></span><br>
+
+        <span id="head">Phone</span>
+        <span id="data"><%= individualData['phone'] %></span><br>
+
+        <span id="head">College</span>
+        <span id="data"><%= individualData['college'] %></span><br>
+
+        <span id="head">Branch</span>
+        <span id="data"><%= individualData['branch'] %></span>
+
+        <span id="head" class="year">Year</span>
+        <span id="data"><%= individualData['year'] %></span>
+      </div>
+
+
+      <div id="individualWrapper">
+        <div id="individualHead">
+          Individual Events
+        </div>
+
+
+
+
+        <table>
+          <tr>
+            <th>Event Name</th>
+            <th>Venue</th>
+            <th>Timings</th>
+          </tr>
+
+          <% for (const i in indiEvents){ %>
+
+          <tr>
+            <td><%= indiEvents[i][0] %></td>
+            <td><%= indiEvents[i][1] %></td>
+            <td><%= indiEvents[i][2] %></td>
+          </tr>
+
+
+          <% } %>
+
+        </table>
+      </div>
+
+
+
+      <!-- individual if end  -->
+      <% } %>
+
+
+      <div id="teamWrapper">
+        <div id="teamHead">
+          Team Events
+        </div>
+
+
+        <table>
+          <tr>
+            <th>TID</th>
+            <th>Event Name</th>
+            <th>Venue</th>
+            <th>Timings</th>
+            <th>Members</th>
+          </tr>
+
+          <% for (const i in teamEvents){ %>
+      
+          <tr>
+            <td><%= teamEvents[i][0] %></td>
+            <td><%= teamEvents[i][1] %></td>
+            <td><%= teamEvents[i][2] %></td>
+            <td><%= teamEvents[i][3] %></td>
+            <td><%= teamEvents[i][4] %></td>
+          </tr>
+<% } %>
+
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+
+
+
+
+  <style>
+
+@media print {
+            #header {
+                display: none;
+            }
+        }
+        #header{
+          font-size: 20px;
+          color: red;
+          text-align: center;
+          padding: 20px;
+        }
+    #head,
+    #pid-head {
+
+      width: 60px;
+      display: inline-block;
+      padding: 7px;
+
+
+
+
+    }
+
+    #data::before {
+      content: ":  ";
+    }
+
+    #pid-data::before {
+      content: ":  ";
+    }
+
+    hr {
+      color: #090909;
+      /* Line color */
+      background-color: #333;
+      /* Line color for older browsers */
+      height: 2px;
+      /* Line thickness */
+      width: 100%;
+      margin: 20px 0;
+      /* Margin above and below the line */
+    }
+
+    #zest {
+      font-weight: 700;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 22px;
+      text-decoration: underline;
+    }
+
+    #data,
+    #pid-data {
+
+
+      display: inline-block;
+    }
+
+    .year {
+      margin-left: 33%;
+    }
+
+
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+
+    #pdf {
+      display: flex;
+      justify-content: center;
+
+
+    }
+
+    #collegeHeader {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+
+    }
+
+    #pdfWrapper {
+      padding: 7px;
+      height: 277mm;
+      width: 210mm;
+      border: 1px solid black;
+      box-sizing: border-box;
+
+
+
+    }
+
+    #collegeName {
+
+      text-align: center;
+      font-size: 25px;
+      width: 600px;
+      text-transform: uppercase;
+      font-weight: 700;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+
+    }
+
+    #individualHead,
+    #teamHead {
+      font-size: 20px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th,
+    td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+      min-width: 100px;
+      word-break: break-word;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    #individualWrapper,
+    #teamWrapper {
+      margin-top: 40px;
+    }
+  </style>
+
+
+
+</body>
+
+</html>

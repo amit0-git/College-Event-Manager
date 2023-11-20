@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JC Dashboard</title>
+</head>
+
+<body>
+  <%- include("partials/header"); %>
+  <div id="loading"><img src="/assets/loading.gif" alt="" srcset=""></div>
+
+  <div id="contentWrapper">
+    <h1 id="headmain">Welcome to JC Dashboard</h1>
+    <div id="boxWrapper">
+      <div id="box1">
+        <div id="head">Students Registered</div>
+
+        <div id="desc"><%= data['students'] %></div>
+      </div>
+
+      <div id="box2">
+        <div id="head">Teams Registered</div>
+        <div id="desc"><%= data['teams'] %></div>
+      </div>
+
+      <div id="box3">
+        <div id="head">Registered In
+          <select name="singleSelect" id="singleSelect">
+            <option value="">Single Event</option>
+            <% for (const i in data['eventSingle']) { %>
+            <option value="<%= data['eventSingle'][i]['event'] %>"><%= data['eventSingle'][i]['event'] %></option>
+
+
+            <% } %>
+          </select>
+        </div>
+        <div id="singleDesc">0</div>
+      </div>
+
+      <div id="box4">
+        <div id="head">Registered In
+          <select name="teamSelect" id="teamSelect">
+            <option value="">Team Event</option>
+            <% for (const i in data['eventTeam']) { %>
+            <option value="<%= data['eventTeam'][i]['event'] %>"><%= data['eventTeam'][i]['event'] %></option>
+
+
+            <% } %>
+          </select>
+        </div>
+        <div id="teamDesc">0</div>
+      </div>
+    </div>
+
+
+
+    <h1>Export Records In Excel</h1>
+    <div id="container">
+
+      <div id="excelWrapper">
+        <div id="head">Individual Event</div>
+        <select name="singleSelect" id="singleSelectExcel">
+          <option value="">Single Event</option>
+          <% for (const i in data['eventSingle']) { %>
+          <option value="<%= data['eventSingle'][i]['event'] %>"><%= data['eventSingle'][i]['event'] %></option>
+
+
+          <% } %>
+        </select>
+      </div>
+
+      <div id="excelWrapper">
+        <div id="head">Team Event</div>
+        <select name="teamSelect" id="teamSelectExcel">
+          <option value="">Team Event</option>
+          <% for (const i in data['eventTeam']) { %>
+          <option value="<%= data['eventTeam'][i]['event'] %>"><%= data['eventTeam'][i]['event'] %></option>
+
+
+          <% } %>
+        </select>
+      </div>
+    </div>
+
+
+
+
+  </div>
+
+
+
+  <script>
+    const singleDrop = document.getElementById("singleSelect")
+    const teamDrop = document.getElementById("teamSelect")
+
+    //excel dropdown
+    const singleDropExcel = document.getElementById("singleSelectExcel")
+    const teamDropExcel = document.getElementById("teamSelectExcel")
+
+    //loading
+    const loading = document.getElementById('loading');
+    const content = document.getElementById('contentWrapper');
+    // Function to display loading icon and hide content
+    async function showLoading() {
+      loading.style.display = 'block';
+
+    }
+
+    // Function to hide loading icon and display content
+    async function hideLoading() {
+      loading.style.display = 'none';
+
+    }
+
+    singleDropExcel.addEventListener("change", excelSingle)
+
+    singleDrop.addEventListener("change", updateSingle)
+    teamDrop.addEventListener("change", updateTeam)
+
+    const singleDesc = document.getElementById("singleDesc")
+    const teamDesc = document.getElementById("teamDesc")
+
+
+    async function excelSingle() {
+      const value = singleDropExcel.value
+
+      console.log("Excel", value)
+    }
+
+    async function fetchCount(type, event) {
+
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+
+          type: type,
+          event: event
+        }),
+      };
+
+
+
+      try {
+
+
+        const response = await fetch("http://localhost:3000/getCount", options);
+        const result = await response.json();
+
+        return result;
+
+      } catch (error) {
+        console.error('Error during POST request:', error);
+
+      }
+    }
+
+
+
+
+    async function updateSingle() {
+      const event = singleDrop.value
+      await showLoading();
+
+      try {
+        const ans = await fetchCount('1', event);
+
+        // Update content with fetched data
+        singleDesc.innerHTML = ans;
+
+        // Hide loading icon after data is fetched
+        hideLoading();
+
+        console.log(event, ans);
+      } catch (error) {
+   
+        console.error('Error while updating single:', error);
+        hideLoading();
+      
+      }
+
+    }
+
+    async function updateTeam() {
+      const event = teamDrop.value
+      await showLoading();
+      try {
+        const ans = await fetchCount('2', event);
+
+        // Update content with fetched data
+        teamDesc.innerHTML = ans;
+
+        // Hide loading icon after data is fetched
+        hideLoading();
+
+        console.log(event, ans);
+      } catch (error) {
+   
+        console.error('Error while updating single:', error);
+        hideLoading();
+      
+      }
+    }
+  </script>
+
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Dancing+Script&family=Fredericka+the+Great&family=Poppins&display=swap');
+
+    #loading {
+      text-align: center;
+
+      padding: 5px;
+      display: none;
+
+
+
+
+    }
+
+    #loading img {
+      height: 300px;
+      width: 300px;
+      transform: translate(-50%, 50%);
+      position: absolute;
+
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    #headmain {
+      margin-left: 30px;
+    }
+
+    #boxWrapper {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 30px;
+    }
+
+    #box1,
+    #box2,
+    #box3,
+    #box4 {
+
+
+      padding: 10px;
+      padding-left: 20px;
+      padding-right: 20px;
+      border-radius: 10px;
+    }
+
+    #box1 {
+      background-color: orange;
+      color: white;
+      box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    }
+
+    #box2 {
+      background-color: rgb(95, 148, 31);
+      color: white;
+      box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    }
+
+    #box3 {
+      background-color: rgb(17, 172, 128);
+      color: white;
+      box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    }
+
+    #box4 {
+      background-color: rgb(0, 98, 255);
+      color: white;
+      box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    }
+
+    #head {
+      font-size: 26px;
+
+    }
+
+    #desc {
+      font-size: 20px;
+    }
+
+    select {
+      width: auto;
+      padding: 7px;
+
+      border-radius: 4px;
+      border: 2px solid white;
+      color: white;
+
+    }
+
+    #box3 select {
+      background-color: rgb(17, 172, 128);
+    }
+
+    #box4 select {
+      background-color: rgb(0, 98, 255);
+    }
+
+    #container {
+      display: flex;
+      justify-content: flex-start;
+      gap: 30px;
+      margin-left: 30px;
+    }
+
+    h1 {
+      margin-left: 30px;
+      color: green
+    }
+
+    #excelWrapper {
+      padding: 10px;
+      padding-left: 20px;
+      padding-right: 20px;
+      border-radius: 10px;
+
+      background-color: green;
+      color: white;
+      box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    }
+
+    #excelWrapper select {
+      background-color: green;
+    }
+  </style>
+
+</body>
+
+</html>

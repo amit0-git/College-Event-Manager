@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>User Signup</title>
+</head>
+
+<body>
+  <%- include("partials/adminHeader"); %>
+
+
+  <div id="signupWrapper">
+    <div id="leftWrap">
+      <div id="left">
+        <h1>Register User Roles</h1>
+
+        <form action="/signup" method="POST">
+
+          <label for="">Username</label>
+          <input type="text" name="username" placeholder="Username" required><br><br>
+
+          <label for="">Password</label>
+          <input type="password" name="password" placeholder="Password" required><br><br>
+
+          <label for="">Role</label>
+          <select name="roleSelect">
+            <option value="register">User</option>
+            <option value="jc">JC</option>
+
+          </select>
+          <br>
+          <br>
+
+          <button type="submit">Sign Up</button>
+        </form>
+      </div>
+      <% if (message) {%>
+
+      <div class="error-message">
+        <h4> <%= message %> </h4>
+      </div>
+      <% }%>
+    </div>
+
+
+
+    <div id="right">
+      <h1>User Roles</h1>
+      <table>
+        <tr>
+          <th>Username</th>
+          <th>Role</th>
+          <th>Delete</th>
+
+        </tr>
+        <% for (const i in users) { %>
+
+
+        <tr>
+          <td><%= users[i]['username'] %></td>
+          <td><%= users[i]['role'] %></td>
+          <td><a href="/deleteRole/<%= users[i]['username'] %>" id="delA">X</a></td>
+
+        </tr>
+
+        <% } %>
+
+
+      </table>
+
+
+    </div>
+  </div>
+
+
+
+
+  <style>
+       #delA {
+      display: inline-block;
+      padding: 1px 8px 1px 8px;
+      text-decoration: none;
+      background-color: #ff0000;
+      color: #fff;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    /* CSS for modern colorful UI */
+    .error-message {
+      width: 350px;
+
+      /* margin: 20px auto; */
+      padding: 10px;
+      background-color: #ef3141;
+      /* Red or any other error color */
+      color: white;
+      /* Text color for error message */
+      border: 1px solid #f5c6cb;
+      /* Border color */
+      border-radius: 5px;
+      text-align: center;
+      font-size: 16px;
+  
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+    }
+
+    #signupWrapper {
+      display: flex;
+      justify-content: space-around;
+      height: 90vh;
+
+
+    }
+    #leftWrap{
+      height: 600px;
+     display: flex  ;
+     flex-direction: column;
+     justify-content: center;
+     align-items: center;
+    }
+
+    #left {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      margin: 10px;
+      width: 350px;
+      height: 500px;
+
+    }
+
+
+    #right {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      margin: 10px;
+      width: 500px;
+      overflow-y: scroll;
+      height: 600px;
+    }
+
+    h1 {
+
+      margin-bottom: 20px;
+      text-align: center;
+      color: blue;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      margin-bottom: 5px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    select,
+    button {
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+
+      transition: all 0.3s ease;
+    }
+
+    select {
+      width: 100%;
+      background-color: #f5f5f5;
+      color: #333;
+      padding: 10px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: #fff;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th,
+    td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color:orange;
+      color: white;
+      font-weight: bold;
+    }
+    tr{
+      border-radius: 10px;
+    }
+    tr:nth-child(odd){
+      background-color: #FFF9C4;
+    }
+
+    a {
+      text-decoration: none;
+      color: #ff4d4d;
+      font-weight: bold;
+    }
+
+ 
+  </style>
+
+</body>
+
+</html>

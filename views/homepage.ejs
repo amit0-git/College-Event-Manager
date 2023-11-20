@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Homepage</title>
+</head>
+
+<body>
+  <div id="imgCont">
+    <img src="/assets/sideFlag.png" alt="" id="leftFlag">
+    <img src="/assets/pngwing.com.png" alt="" id="mainFlag">
+    <img src="/assets/sideFlag.png" alt="" id="rightFlag">
+
+  </div>
+  <div id="content">
+    <div id="head">ZEST 2K23</div>
+    <div id="theme">Parakram: Vriddhim Upnidhi</div>
+
+  </div>
+
+
+  <div id="wrapper">
+
+    <div id="box">
+      <img src="/assets/textBg.png" alt="" id="txtbg">
+      <a id="txtlink1" href="/login">Register</a>
+    </div>
+    <div id="box">
+      <img src="/assets/textBg.png" alt="" id="txtbg">
+      <a id="txtlink2" href="/jcLogin">Judgement Commitee</a>
+    </div>
+
+    <div id="box">
+      <img src="/assets/textBg.png" alt="" id="txtbg">
+      <a id="txtlink3" href="/admin">Admin</a>
+    </div>
+
+
+
+  </div>
+
+
+  <%- include("partials/developerStrip"); %>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Dancing+Script&family=Fredericka+the+Great&family=Poppins&display=swap');
+
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    #imgCont {
+      position: relative;
+      height: 300px;
+
+    }
+
+    #mainFlag {
+      height: 150px;
+      width: 52%;
+      position: absolute;
+      top: -20px;
+      left: 25%;
+      transform: rotate(-1deg);
+
+
+    }
+
+    #leftFlag {
+      height: 100%;
+      width: 25%;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    #rightFlag {
+      height: 100%;
+      width: 25%;
+      transform: scaleX(-1);
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+
+
+    #content {
+      position: absolute;
+      top: 200px;
+      width: 100%;
+    }
+
+    #head {
+      font-size: 120px;
+      text-align: center;
+      font-family: 'Fredericka the Great', serif;
+
+      color: red;
+
+    }
+
+    #theme {
+      text-align: center;
+      font-size: 70px;
+      font-family: 'Dancing Script', cursive;
+      color: rgb(213, 91, 91);
+
+    }
+
+    #wrapper {
+
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+
+
+      margin-top: 200px;
+      width: 100%;
+
+    }
+
+    #box {
+      position: relative;
+    }
+    #box a:hover{
+      font-size: 22px;
+    }
+   
+
+    #txtbg {
+      width: 400px;
+
+
+
+    }
+
+    #txtlink1 {
+      text-decoration: none;
+      position: absolute;
+      top: 33%;
+      left: 160px;
+      color: white;
+      font-family: 'Dancing Script', cursive;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    #txtlink2 {
+      text-decoration: none;
+      position: absolute;
+      top: 33%;
+      left: 33%;
+      color: white;
+      font-family: 'Dancing Script', cursive;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    #txtlink3 {
+      text-decoration: none;
+      position: absolute;
+      top: 33%;
+      left: 190px;
+      color: white;
+      font-family: 'Dancing Script', cursive;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+   
+  </style>
+</body>
+
+</html>
