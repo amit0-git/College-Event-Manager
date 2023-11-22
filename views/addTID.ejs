@@ -647,32 +647,33 @@
 
 
 
-      if (!eventMax) {
+      if (await !eventMax) {
         //check whether event is selected
         return error.innerHTML = "Please Select Event!"
       }
 
-      if (!pid) {
+      if (await !pid) {
         //if the pid input is empty
         return error.innerHTML = "Please Enter PID!"
       }
 
       //check whether you are not adding same pid to team event
 
-      if (pids.includes(pid)) {
+      if (await pids.includes(pid)) {
         //if we are trying to add same PID
         return error.innerHTML = "PID already added!"
       }
 
       //check whether the team limit exceeded
 
-      if (pids.length >= eventMax['data']) {
+      if (await pids.length >= await eventMax['data']) {
         return error.innerHTML = "Event Limit Exceeded!"
       }
 
 
 
       pid=pid.toUpperCase()
+
       //fetch details of the PID
       const data = await fetchData(pid);
 
@@ -704,9 +705,9 @@
 
           if (studentRoleVerify['status']) {
             //if the role is verified and user is allowed to participate
-
-            await createHTML(data)
             pids.push(pid)
+            await createHTML(data)
+          
 
           } else {
             //if the role is not verified and PID not registered with the  event

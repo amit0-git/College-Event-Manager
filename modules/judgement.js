@@ -141,7 +141,7 @@ router.post("/getCount", verifyJC, async (req, res) => {
         try {
             const result = await Individual.countDocuments({ singleEvent: event })
 
-        if (result) {
+            if (result) {
                 res.json(result)
             }
             else {
@@ -260,6 +260,60 @@ router.post("/jcLogin", async (req, res) => {
 
     //if the login is successfull
     res.redirect(302, "/jc")
+
+
+
+})
+
+
+
+
+router.get("/expandTeam",verifyJC, async (req, res) => {
+    let tid = req.query.tidInp.toUpperCase()
+
+    //first get the detail of the tid members
+    //then get the detail of the each pid
+
+    try {
+        const tidData = await Team.findOne({ tid: tid })
+
+        if (tidData){
+            let members=tidData['members']
+            let data={}
+
+
+
+            for (const i in members){
+
+             
+                let pidData=await Individual.findOne({pid:members[i]})
+                data[members[i]]={"pid":pidData['pid'],"name":pidData['name'],"branch":pidData['branch'],"college":pidData['college'],"year":pidData['year'],"phone":pidData['phone']}
+
+            }
+            console.log(data)
+
+
+
+            res.render("expandTeam",{data:data,tid:tidData['tid'],event:tidData['event'],username:req.user.username})
+          
+
+            
+            
+
+            
+        }
+
+
+        else{
+            res.render("expandTeam",{data:null,tid:null,event:null,username:req.user.username})
+        }
+
+    }
+
+    catch (error) {
+        console.log(error)
+    }
+
 
 
 

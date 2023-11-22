@@ -9,6 +9,7 @@
 
 <body>
   <%- include("partials/header"); %>
+
   <div id="loading"><img src="/assets/loading.gif" alt="" srcset=""></div>
 
   <div id="contentWrapper">
@@ -87,6 +88,15 @@
 
 
 
+  </div>
+<!-- Add Team Expand input box -->
+  <h1>Expand Team</h1>
+  <div id="teamExpandWrapper">
+    <form action="/expandTeam" method="get" id="expandForm">
+      <input type="text" name="tidInp" id="tidinp" placeholder="Expand Team">
+      <button type="submit" id="Expandbtn">Expand</button>
+    
+    </form>
   </div>
 
 
@@ -281,6 +291,33 @@
       color: white;
       box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
     }
+    #teamExpandWrapper{
+      background-color: orange;
+      color: white;
+      box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+      padding: 20px;
+      width:250px;
+      margin-left: 30px;
+      border-radius: 10px;
+    }
+
+    #teamExpandWrapper input{
+      padding: 5px;
+    }
+
+    #Expandbtn{
+      padding: 6px;
+      background-color: blue;
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 5px;
+    }
+    #tidinp{
+      border-radius: 5px;
+      border-color: white;
+    }
+   
 
     #head {
       font-size: 26px;
