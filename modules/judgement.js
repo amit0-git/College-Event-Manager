@@ -1,5 +1,5 @@
 const express = require("express")
-
+const excelJS = require("exceljs");
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 
@@ -268,7 +268,7 @@ router.post("/jcLogin", async (req, res) => {
 
 
 
-router.get("/expandTeam",verifyJC, async (req, res) => {
+router.get("/expandTeam", verifyJC, async (req, res) => {
     let tid = req.query.tidInp.toUpperCase()
 
     //first get the detail of the tid members
@@ -277,35 +277,35 @@ router.get("/expandTeam",verifyJC, async (req, res) => {
     try {
         const tidData = await Team.findOne({ tid: tid })
 
-        if (tidData){
-            let members=tidData['members']
-            let data={}
+        if (tidData) {
+            let members = tidData['members']
+            let data = {}
 
 
 
-            for (const i in members){
+            for (const i in members) {
 
-             
-                let pidData=await Individual.findOne({pid:members[i]})
-                data[members[i]]={"pid":pidData['pid'],"name":pidData['name'],"branch":pidData['branch'],"college":pidData['college'],"year":pidData['year'],"phone":pidData['phone']}
+
+                let pidData = await Individual.findOne({ pid: members[i] })
+                data[members[i]] = { "pid": pidData['pid'], "name": pidData['name'], "rollno": pidData['rollno'], branch: pidData['branch'], "college": pidData['college'], "year": pidData['year'], "phone": pidData['phone'] }
 
             }
             console.log(data)
 
 
 
-            res.render("expandTeam",{data:data,tid:tidData['tid'],event:tidData['event'],username:req.user.username})
-          
+            res.render("expandTeam", { data: data, tid: tidData['tid'], event: tidData['event'], username: req.user.username })
 
-            
-            
 
-            
+
+
+
+
         }
 
 
-        else{
-            res.render("expandTeam",{data:null,tid:null,event:null,username:req.user.username})
+        else {
+            res.render("expandTeam", { data: null, tid: null, event: null, username: req.user.username })
         }
 
     }
@@ -319,6 +319,171 @@ router.get("/expandTeam",verifyJC, async (req, res) => {
 
 })
 
+
+
+
+router.get("/exportTeam/:name", async (req, res) => {
+    const name = req.params.name
+
+    const data = await Team.find({ event: name })
+
+    if (data) {
+        const workbook = new excelJS.Workbook();
+
+        const worksheet = workbook.addWorksheet(name);
+        let users = []
+        let jsonData = {}
+
+        worksheet.getCell('A1').value = name
+
+        worksheet.mergeCells('A1:B1')
+        worksheet.getCell('A1').alignment = { horizontal: 'center' }
+
+
+
+        const columnHeaderRow = worksheet.addRow(['TID', 'MEMBERS']);
+
+
+        columnHeaderRow.eachCell(cell => {
+            cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: '00FF00' } // Set background color of the header cells to green
+            };
+            cell.font = { bold: true };
+        });
+
+        worksheet.columns = [
+            { key: "tid", width: 15 },
+            { key: "members", width: 100 },
+
+        ];
+
+
+
+
+
+
+
+        //add json and add data to array
+
+        for (const i in data) {
+            jsonData["tid"] = data[i]['tid']
+          
+            jsonData["members"] = data[i]['members']
+
+
+            users.push(jsonData)
+            jsonData = {}
+
+
+        }
+
+        users.forEach(user => { worksheet.addRow(user); });
+
+
+        console.log(users)
+
+
+
+
+
+        // Set up the response headers 
+        res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"); res.setHeader("Content-Disposition", "attachment; filename=" + name + ".xlsx");
+
+        // Write the workbook to the response object 
+        await workbook.xlsx.write(res).then(() => res.end());
+
+
+
+
+    }
+
+})
+
+
+router.get("/exportIndividual/:name", async (req, res) => {
+    const name = req.params.name
+
+    const workbook = new excelJS.Workbook();
+
+    const worksheet = workbook.addWorksheet(name);
+
+    const data = await Individual.find({ singleEvent: name })
+
+    if (data) {
+        let users = []
+        let jsonData = {}
+
+
+
+
+
+        worksheet.getCell('A1').value = name
+
+        worksheet.mergeCells('A1:G1')
+        worksheet.getCell('A1').alignment = { horizontal: 'center' }
+
+
+        // worksheet.addRow(2).values = ['PID', 'ROLL NO', 'NAME', 'COLLEGE', 'PHONE', 'BRANCH', "YEAR"]
+        const columnHeaderRow = worksheet.addRow(['PID', 'ROLL NO', 'NAME', 'COLLEGE', 'PHONE', 'BRANCH', 'YEAR']);
+
+
+        columnHeaderRow.eachCell(cell => {
+            cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: '00FF00' } // Set background color of the header cells to green
+            };
+            cell.font = { bold: true };
+        });
+        worksheet.columns = [
+            { key: "pid", width: 15 },
+            { key: "rollno", width: 20 },
+            { key: "name", width: 30 },
+            { key: "college", width: 25 },
+            { key: "phone", width: 15 },
+            { key: "branch", width: 10 },
+            { key: "year", width: 10 }
+        ];
+
+
+
+        //add json and add data to array
+
+        for (const i in data) {
+            jsonData["pid"] = data[i]['pid']
+            jsonData["rollno"] = data[i]['rollno']
+            jsonData["name"] = data[i]['name']
+            jsonData["college"] = data[i]['college']
+            jsonData["phone"] = data[i]['phone']
+            jsonData["branch"] = data[i]['branch']
+            jsonData["year"] = data[i]['year']
+
+            users.push(jsonData)
+            jsonData = {}
+
+
+        }
+
+        users.forEach(user => { worksheet.addRow(user); });
+
+
+        console.log(users)
+
+
+
+
+
+        // Set up the response headers 
+        res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"); res.setHeader("Content-Disposition", "attachment; filename=" + name + ".xlsx");
+
+        // Write the workbook to the response object 
+        await workbook.xlsx.write(res).then(() => res.end());
+
+
+    }
+})
 
 
 

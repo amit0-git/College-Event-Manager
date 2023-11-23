@@ -125,6 +125,7 @@
     }
 
     singleDropExcel.addEventListener("change", excelSingle)
+    teamDropExcel.addEventListener("change", excelTeam)
 
     singleDrop.addEventListener("change", updateSingle)
     teamDrop.addEventListener("change", updateTeam)
@@ -135,7 +136,21 @@
 
     async function excelSingle() {
       const value = singleDropExcel.value
+      if (value){
+        window.open("http://localhost:3000/exportIndividual/"+value, "_blank");
+      }
+      
 
+      console.log("Excel", value)
+    }
+
+    async function excelTeam() {
+      const value = teamDropExcel.value
+      if (value){
+        window.open("http://localhost:3000/exportTeam/"+value, "_blank");
+
+      }
+    
       console.log("Excel", value)
     }
 

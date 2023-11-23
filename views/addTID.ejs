@@ -10,6 +10,7 @@
 <body>
 
   <%- include("partials/header"); %>
+  <div id="loading"><img src="/assets/loading.gif" alt="" srcset=""></div>
 
   <div id="teamWrapper">
 
@@ -62,7 +63,7 @@
 
       <form action="/searchPIDtid" method="POST">
         <input type="text" name="pid" placeholder="Search PID or TID" required id="pid">
-        
+
         <input type="submit" value="Submit" id="pidSubmit">
       </form>
 
@@ -118,6 +119,25 @@
 
 
   <style>
+    #loading {
+      text-align: center;
+
+      padding: 5px;
+      display: none;
+
+
+
+
+    }
+
+    #loading img {
+      height: 300px;
+      width: 300px;
+      transform: translate(-50%, 50%);
+      position: absolute;
+
+    }
+
     /* General styles */
     body {
       font-family: Arial, sans-serif;
@@ -134,7 +154,7 @@
       display: flex;
       justify-content: space-around;
       margin-top: 15px;
-  
+
     }
 
     #left {
@@ -148,7 +168,8 @@
     .form-container {
       margin-bottom: 20px;
     }
-    .form-container h1{
+
+    .form-container h1 {
       color: blue;
     }
 
@@ -202,12 +223,14 @@
       color: rgb(255, 119, 0)
     }
 
-    #middle th,#right th {
+    #middle th,
+    #right th {
       background-color: rgb(218, 158, 46);
 
     }
 
-    #middle td,#right td {
+    #middle td,
+    #right td {
       font-size: 13px;
     }
 
@@ -232,7 +255,7 @@
     }
 
     th {
- 
+
       font-weight: bold;
       color: white;
 
@@ -255,7 +278,8 @@
       width: 450px;
       height: 600px;
     }
-    #right h1{
+
+    #right h1 {
       color: red;
     }
 
@@ -276,7 +300,7 @@
       border: 1px solid #ccc;
     }
 
-  
+
 
     button {
       width: 100%;
@@ -289,7 +313,8 @@
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
-    label{
+
+    label {
       font-weight: bold;
     }
 
@@ -313,7 +338,7 @@
       color: red;
       font-size: 20px;
       font-weight: bold;
-      
+
     }
 
     #teamDel:hover {
@@ -336,15 +361,16 @@
       transition: background-color 0.3s ease;
     }
 
-    #pidSubmit{
+    #pidSubmit {
       background-color: blueviolet;
       color: white;
       padding: 10px;
       border: none;
     }
-    #pid{
+
+    #pid {
       padding: 10px;
-      
+
     }
   </style>
 
@@ -387,6 +413,20 @@
     const del = document.getElementById("teamDel")
 
 
+    //loading
+    const loading = document.getElementById('loading');
+
+    // Function to display loading icon and hide content
+    async function showLoading() {
+      loading.style.display = 'block';
+
+    }
+
+    // Function to hide loading icon and display content
+    async function hideLoading() {
+      loading.style.display = 'none';
+
+    }
 
     //function to check the condition for participation for different students
     async function checkParticipationCondition(pid) {
@@ -636,124 +676,145 @@
 
     //function to add PID in the table 
     async function addData() {
-      //clear the previous TID exists data
-      await clearGenerateHTMLForTID()
+
+      await showLoading();
+
+
+
+      try {
+
+        //clear the previous TID exists data
+        await clearGenerateHTMLForTID()
 
 
 
 
-      let pid = document.getElementById("pidinp").value
+        let pid = document.getElementById("pidinp").value
 
 
 
 
-      if (await !eventMax) {
-        //check whether event is selected
-        return error.innerHTML = "Please Select Event!"
-      }
+        if (await !eventMax) {
+          //check whether event is selected
+          await hideLoading()
+          return error.innerHTML = "Please Select Event!"
+        }
 
-      if (await !pid) {
-        //if the pid input is empty
-        return error.innerHTML = "Please Enter PID!"
-      }
+        if (await !pid) {
+          //if the pid input is empty
+          await hideLoading()
+          return error.innerHTML = "Please Enter PID!"
+        }
 
-      //check whether you are not adding same pid to team event
+        //check whether you are not adding same pid to team event
 
-      if (await pids.includes(pid)) {
-        //if we are trying to add same PID
-        return error.innerHTML = "PID already added!"
-      }
+        if (await pids.includes(pid)) {
+          //if we are trying to add same PID
+          await hideLoading()
+          return error.innerHTML = "PID already added!"
+        }
 
-      //check whether the team limit exceeded
+        //check whether the team limit exceeded
 
-      if (await pids.length >= await eventMax['data']) {
-        return error.innerHTML = "Event Limit Exceeded!"
-      }
-
-
-
-      pid=pid.toUpperCase()
-
-      //fetch details of the PID
-      const data = await fetchData(pid);
-
-      if (data['student'] === "Not Found") {
-        //if the server return not found
-        return error.innerHTML = "NO PID Found!"
-      } else {
-        //if the pid is found
-
-
-        //new logic 
-
-        const pidExists = await isPIDregisteredWithSameEvent(pid);
-
-        if (pidExists['status']) {
-          //if the PID is registered with same event
-
-          error.innerHTML = "PID already In the team!"
-          console.log("pid exists", pidExists['data'])
-          await generateHTMLForTID(pidExists['data'], null)
-
-        } else {
-          //if the PID is not registered same event
-
-          //check the roles of student for participation
-          const studentRoleVerify = await checkParticipationCondition(pid);
-
-          console.log("role verify", studentRoleVerify)
-
-          if (studentRoleVerify['status']) {
-            //if the role is verified and user is allowed to participate
-            pids.push(pid)
-            await createHTML(data)
-          
-
-          } else {
-            //if the role is not verified and PID not registered with the  event
-            console.log(pidExists['data'])
-
-
-            error.innerHTML = studentRoleVerify['data']
-          }
-
-
+        if (await pids.length >= await eventMax['data']) {
+          await hideLoading()
+          return error.innerHTML = "Event Limit Exceeded!"
         }
 
 
 
+        pid = pid.toUpperCase()
 
-        // //check the roles of student for participation
-        // const studentRoleVerify = await checkParticipationCondition(pid);
+        //fetch details of the PID
+        const data = await fetchData(pid);
 
-        // console.log("verify", studentRoleVerify)
-
-        // if (studentRoleVerify['status']) {
-
-        //   const data1 = await isPIDregisteredWithSameEvent(pid);
-        //   if (data1) {
-        //     error.innerHTML = "PID already In the team!"
-        //     console.log(data1['data'])
-        //     await generateHTMLForTID(data1['data'], null)
-        //   } else {
-        //     await createHTML(data)
-        //     pids.push(pid)
-        //   }
-
-        // } else {
-        //   const data1 = await isPIDregisteredWithSameEvent(pid);
-        //   console.log("data1 after role", data1)
-        //   if (data1) {
-        //     await generateHTMLForTID(data1['data'], null)
-        //   }
-
-        //   error.innerHTML = studentRoleVerify['data']
-        // }
+        if (data['student'] === "Not Found") {
+          //if the server return not found
+          await hideLoading()
+          return error.innerHTML = "NO PID Found!"
+        } 
+        
+        else {
+          //if the pid is found
 
 
+          //new logic 
+
+          const pidExists = await isPIDregisteredWithSameEvent(pid);
+
+          if (pidExists['status']) {
+            //if the PID is registered with same event
+
+            error.innerHTML = "PID already In the team!"
+            console.log("pid exists", pidExists['data'])
+            await generateHTMLForTID(pidExists['data'], null)
+
+          } else {
+            //if the PID is not registered same event
+
+            //check the roles of student for participation
+            const studentRoleVerify = await checkParticipationCondition(pid);
+
+            console.log("role verify", studentRoleVerify)
+
+            if (studentRoleVerify['status']) {
+              //if the role is verified and user is allowed to participate
+              pids.push(pid)
+              await createHTML(data)
 
 
+            } else {
+              //if the role is not verified and PID not registered with the  event
+              console.log(pidExists['data'])
+
+
+              error.innerHTML = studentRoleVerify['data']
+            }
+
+
+          }
+          await hideLoading()
+
+
+
+        }
       }
+
+
+
+      catch(error){
+        await hideLoading()
+        console.log("Add Data Error: ",error)
+      }
+
+      // //check the roles of student for participation
+      // const studentRoleVerify = await checkParticipationCondition(pid);
+
+      // console.log("verify", studentRoleVerify)
+
+      // if (studentRoleVerify['status']) {
+
+      //   const data1 = await isPIDregisteredWithSameEvent(pid);
+      //   if (data1) {
+      //     error.innerHTML = "PID already In the team!"
+      //     console.log(data1['data'])
+      //     await generateHTMLForTID(data1['data'], null)
+      //   } else {
+      //     await createHTML(data)
+      //     pids.push(pid)
+      //   }
+
+      // } else {
+      //   const data1 = await isPIDregisteredWithSameEvent(pid);
+      //   console.log("data1 after role", data1)
+      //   if (data1) {
+      //     await generateHTMLForTID(data1['data'], null)
+      //   }
+
+      //   error.innerHTML = studentRoleVerify['data']
+      // }
+
+
 
 
     }

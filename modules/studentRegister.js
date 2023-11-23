@@ -8,7 +8,8 @@ router.use(express.urlencoded({ extended: true }))
 router.use(express.json());
 
 //import middleware
-const { verifyUser} = require('../middlewares/authMiddleware');
+const { verifyUser } = require('../middlewares/authMiddleware');
+const { verifyAdmin } = require('../middlewares/adminMiddleware');
 
 
 //COUNT SCHEMA
@@ -84,7 +85,7 @@ async function getEventTID(pid) {
 
     try {
         const data = await Team.find({ members: pid })
-        
+
 
 
 
@@ -104,9 +105,9 @@ async function getEventTID(pid) {
 }
 
 //route to generate pdf 
-router.get("/print", async (req, res) => {
+router.get("*/print", async (req, res) => {
     let pid = req.query.pid
-    pid=pid.toUpperCase()
+    pid = pid.toUpperCase()
 
     //get student data using PID
     const student = await getStudentDataPID(pid);
@@ -159,11 +160,11 @@ router.get("/print", async (req, res) => {
 })
 
 
-router.get("/register", verifyUser,async  (req, res) => {
+router.get("/register", verifyUser, async (req, res) => {
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     const msg = req.query.msg || null;
 
-  
+
     console.log(msg)
 
 
@@ -226,13 +227,13 @@ async function getStudentData(rollno) {
 
 async function getStudentDataPID(pid) {
     //function to return individual student data based on roll no to display on register form
-    let pid1=pid.charAt(0)
-    pid1=pid1.toUpperCase()
+    let pid1 = pid.charAt(0)
+    pid1 = pid1.toUpperCase()
 
 
     try {
 
-        if (pid1==="P"){
+        if (pid1 === "P") {
             const student = await Individual.findOne({ pid: pid.toUpperCase() })
             if (student) {
                 return student
@@ -241,7 +242,7 @@ async function getStudentDataPID(pid) {
                 return false
             }
         }
-        else{
+        else {
 
             const student = await Individual.findOne({ rollno: pid.toUpperCase() })
             if (student) {
@@ -251,7 +252,7 @@ async function getStudentDataPID(pid) {
                 return false
             }
         }
-        
+
         //console.log(student)
 
 
@@ -333,48 +334,48 @@ router.post("/pid", verifyUser, async (req, res) => {
 
 })
 
-router.post("/searchPIDtid",verifyUser,async(req,res)=>{
-    let id=req.body.pid
-    id=id.toUpperCase()
-    let id1=id.charAt(0)
+router.post("/searchPIDtid", verifyUser, async (req, res) => {
+    let id = req.body.pid
+    id = id.toUpperCase()
+    let id1 = id.charAt(0)
 
-    if (id1==="P"){
+    if (id1 === "P") {
 
-        try{
+        try {
 
-            const data=await Team.find({members:id})
+            const data = await Team.find({ members: id })
             console.log(data)
             const teamEvents = await getTeamEvents()
-            if (data.length!==0){
-              
-                res.render("addTID", { username: req.user.username, message: null, student: null, event: teamEvents ,search:data})
-            }else{
-                res.render("addTID", { username: req.user.username, message: null, student: null, event: teamEvents ,search:null})
+            if (data.length !== 0) {
+
+                res.render("addTID", { username: req.user.username, message: null, student: null, event: teamEvents, search: data })
+            } else {
+                res.render("addTID", { username: req.user.username, message: null, student: null, event: teamEvents, search: null })
             }
-    
+
         }
-        catch(error){
+        catch (error) {
             console.log(error)
         }
-    
+
 
     }
 
-    else{
-        try{
+    else {
+        try {
 
-            const data=await Team.find({tid:id})
+            const data = await Team.find({ tid: id })
             console.log(data)
             const teamEvents = await getTeamEvents()
-            if (data.length!==0){
-                
-                res.render("addTID", { username: req.user.username, message: null, student: null, event: teamEvents ,search:data})
-            }else{
-                res.render("addTID", { username: req.user.username, message: null, student: null, event: teamEvents ,search:null})
+            if (data.length !== 0) {
+
+                res.render("addTID", { username: req.user.username, message: null, student: null, event: teamEvents, search: data })
+            } else {
+                res.render("addTID", { username: req.user.username, message: null, student: null, event: teamEvents, search: null })
             }
-    
+
         }
-        catch(error){
+        catch (error) {
             console.log(error)
         }
     }
@@ -401,27 +402,27 @@ router.get("/pid/:id", verifyUser, async (req, res) => {
 
 //check pid team
 
-router.post("/checkPidTeam",async (req,res)=>{
-    const pid=req.body.pid
-    const event=req.body.event
+router.post("/checkPidTeam", async (req, res) => {
+    const pid = req.body.pid
+    const event = req.body.event
 
 
-    try{
+    try {
 
-        const data=await Team.findOne({event:event,members:pid})
+        const data = await Team.findOne({ event: event, members: pid })
 
-        if (data){
-            res.json({status:true,data:data})
-        }else{
-            res.json({status:false,data:"Not Found"})
+        if (data) {
+            res.json({ status: true, data: data })
+        } else {
+            res.json({ status: false, data: "Not Found" })
         }
 
     }
-    catch(error){
+    catch (error) {
         console.log(error)
     }
 
-    
+
 
 })
 
@@ -481,8 +482,8 @@ router.post("/saveTeam", verifyUser, async (req, res) => {
 })
 
 //delete tid 
-router.get("/deleteTeam/:id",async(req,res)=>{
-    const tid=req.params.id
+router.get("/deleteTeam/:id", async (req, res) => {
+    const tid = req.params.id
 
     //delete the  individual event user from the table
     await Team.deleteOne({ tid: tid }).then(function () {
@@ -497,19 +498,41 @@ router.get("/deleteTeam/:id",async(req,res)=>{
 
 })
 
-router.get("/deletePID/:id", verifyUser, async (req, res) => {
+router.get("/deletePID/:id", verifyAdmin, async (req, res) => {
     const pid = req.params.id
 
-    //delete the  individual event user from the table
-    await Individual.deleteOne({ pid: pid }).then(function () {
-        console.log("PID deleted"); // Success
-
-        res.redirect(302, "/register")
 
 
-    }).catch(function (error) {
-        console.log(error); // Failure
-    });
+    try {
+        //check whetther the PID is registered with any team
+        //if registered then delete the Pid from  the team
+        const checkPid = await Team.find({ members: pid })
+
+        if (checkPid.length !== 0) {
+
+            const updated = await Team.updateMany({}, { $pull: { members: pid } })
+            console.log("Delete PID Updated in Team", updated)
+
+        }
+
+
+
+
+        //delete the  individual event user from the table
+        await Individual.deleteOne({ pid: pid }).then(function () {
+            console.log("PID deleted"); // Success
+
+            res.redirect(302, "/register")
+
+
+        })
+
+    }
+
+
+    catch (error) {
+        console.log(error)
+    }
 
 
     // res.render("register", { username: req.user.username, message: null,student:student});
@@ -538,8 +561,8 @@ async function getSingleCountParticipation(pid) {
 
     try {
 
-        const count = await Individual.findOne({ pid:pid })
-        const len=count['singleEvent'].length
+        const count = await Individual.findOne({ pid: pid })
+        const len = count['singleEvent'].length
 
 
         return len
@@ -551,10 +574,10 @@ async function getSingleCountParticipation(pid) {
     }
 
 }
-router.post("/checkTeamCondition",async (req,res)=>{
-    const pid=req.body.pid
+router.post("/checkTeamCondition", async (req, res) => {
+    const pid = req.body.pid
 
-    try{
+    try {
         //get individual  student data with pid
         const student = await getStudentDataPID(pid);
 
@@ -564,98 +587,144 @@ router.post("/checkTeamCondition",async (req,res)=>{
 
         //check individual event participation
 
-        const indiCount=await getSingleCountParticipation(pid)
+        const indiCount = await getSingleCountParticipation(pid)
 
-        
+
         //get count of team events participated by PID
         const teamCount = await getTeamCountParticipation(pid);
 
-        console.log("ttt",teamCount)
+        console.log("ttt", teamCount)
 
 
         //check for TYRO members 
 
         if (tyroMem) {
-            const upperBody = ["President", "Vice President", "Secretary", "Joint Secretary"]
+            const upperBody = ["President", "Vice President", "Secretary", "Joint Secretary", "Treasurer"]
 
-             //for upper body 
-             if (upperBody.includes(tyroMem.designation)) {
+            //for upper body 
+            if (upperBody.includes(tyroMem.designation)) {
 
                 //upper body can't participate in any event
 
                 console.log("Sorry! Tyro upper body can't participate in any event!")
 
-              
-                const message="Sorry! Tyro upper body can't participate in any event!"
 
-                return res.json({status:false,data:message})
+                const message = "Sorry! Tyro upper body can't participate in any event!"
+
+                return res.json({ status: false, data: message })
 
             }
 
             //for tyro Executives
             else if (tyroMem.designation === "Executive") {
-               if (teamCount===0){
+                if (teamCount === 0) {
 
-                res.json({status:"true",data:""})
+                    res.json({ status: "true", data: "" })
 
-               }
-               else{
-                res.json({status:false,data:"Executives Can only participate in only 1 event"})
-               }
-                
+                }
+                else {
+                    res.json({ status: false, data: "Executives Can only participate in only 1 event" })
+                }
+
             }
 
 
 
-             //for JC members
-             else if (tyroMem.designation === "JC") {
+            //for JC members and JC Volunteer
+            else if (tyroMem.designation === "JC" || tyroMem.designation === "JC Volunteer") {
 
                 //JC can only participate in any 3 events
 
-                if (indiCount + teamCount <= 3) {
+                if ((indiCount + teamCount < 3) && teamCount === 0) {
 
-                    res.json({status:true,data:""})
+                    res.json({ status: true, data: "" })
                 }
 
                 else {
-                    console.log("JC Members can only participate in 3 events!")
+                    console.log("JC Members & Volunteers can only participate in 3 events!")
 
-                   
-                    res.json({status:false,data:"JC Members can only participate in 3 events!"})
+
+                    res.json({ status: false, data: "JC Members & Volunteers can only participate in 3 events!" })
                 }
             }
 
-        }
 
-        else{
 
-            //check for student of SRMS CET (can participate in 7 events)
-            if (student.college==="SRMS CET"){
-                if (indiCount+teamCount<7){
-                    res.json({status:true,data:""})
+
+
+            //for cordinators
+            else if (tyroMem.designation === "Cordinator") {
+
+                //JC can only participate in any 3 events
+
+                if ((indiCount + teamCount < 4) ) {
+
+                    res.json({ status: true, data: "" })
                 }
 
-                else{
+                else {
+                    console.log("Cordinators can only participate in 4 events!")
+
+
+                    res.json({ status: false, data: "Cordinators can only participate in 4 events!" })
+                }
+            }
+
+
+
+            //for chairperson
+            else if (tyroMem.designation === "Chairperson") {
+
+                //JC can only participate in any 3 events
+
+                if ((indiCount + teamCount < 3)) {
+
+                    res.json({ status: true, data: "" })
+                }
+
+                else {
+                    console.log("Chairpersons can only participate in 3 events!")
+
+
+                    res.json({ status: false, data: "Chairpersons can only participate in 3 events!" })
+                }
+            }
+
+
+
+
+
+        }
+
+        else {
+
+            //check for student of SRMS CET (can participate in 7 events)
+            if (student.college === "SRMS CET") {
+                if (indiCount + teamCount < 7) {
+                    res.json({ status: true, data: "" })
+                }
+
+                else {
                     console.log("Students of SRMS CET can participate in maximum 7 events!")
 
-                    res.json({status:false,data:"Students of SRMS CET can participate in maximum 7 events!"})
+                    res.json({ status: false, data: "Students of SRMS CET can participate in maximum 7 events!" })
                 }
             }
 
 
             // check for other college students 
-            else{
-                if (indiCount+teamCount<5){
-                    res.json({status:true,data:""})
+            else {
+                if (indiCount + teamCount < 5) {
+                    res.json({ status: true, data: "" })
                 }
 
-                else{
+                else {
 
                     console.log("Student of other colleges can participate in maximum 5 events!")
 
-                  
 
-                    res.json({status:false,data:"Student of other colleges can participate in maximum 5 events!"})
+
+                    res.json({ status: false, data: "Student of other colleges can participate in maximum 5 events!" })
 
                 }
             }
@@ -666,7 +735,7 @@ router.post("/checkTeamCondition",async (req,res)=>{
 
     }
 
-    catch(error){
+    catch (error) {
 
     }
 
@@ -697,7 +766,7 @@ async function userParticipationValidation(req, res, next) {
 
         if (tyroMem) {
 
-            const upperBody = ["President", "Vice President", "Secretary", "Joint Secretary"]
+            const upperBody = ["President", "Vice President", "Secretary", "Joint Secretary", "Treasurer"]
 
 
 
@@ -711,7 +780,7 @@ async function userParticipationValidation(req, res, next) {
                 //set the req message
 
                 //req.tyroMsg = "Sorry! Tyro upper body can't participate in any event!"
-                const message="Sorry! Tyro upper body can't participate in any event!"
+                const message = "Sorry! Tyro upper body can't participate in any event!"
                 return res.redirect(302, `/register?msg=${encodeURIComponent(message)}`)
 
             }
@@ -719,30 +788,30 @@ async function userParticipationValidation(req, res, next) {
             //for tyro Executives
             else if (tyroMem.designation === "Executive") {
                 //the single element is not in the form of array so convert to array
-                if (!Array.isArray(events)){
-                    events=Array.from([events]);
+                if (!Array.isArray(events)) {
+                    events = Array.from([events]);
                 }
 
-                if (events.length === 1) {
+                if (events.length===1) {
                     next();
                 }
                 else {
                     console.log("Executives can participate in one Individual Event only")
 
                     //set the req message
-                    const message="Executives can participate in one Individual Event only"
+                    const message = "Executives can participate in one Individual Event only"
                     return res.redirect(302, `/register?msg=${encodeURIComponent(message)}`)
-                  
+
                 }
             }
 
 
-            //for JC members
-            else if (tyroMem.designation === "JC") {
+            //for JC members and JC volunter
+            else if (tyroMem.designation === "JC" || tyroMem.designation === "JC Volunteer") {
 
                 //JC can only participate in any 3 events
-                if (!Array.isArray(events)){
-                    events=Array.from([events]);
+                if (!Array.isArray(events)) {
+                    events = Array.from([events]);
                 }
 
                 if (events.length + teamCount <= 3) {
@@ -751,14 +820,67 @@ async function userParticipationValidation(req, res, next) {
                 }
 
                 else {
-                    console.log("JC Members can only participate in 3 events!")
+                    console.log("JC Members & Volunteers can only participate in 3 events!")
 
                     //set the req message
 
-                    const message="JC Members can only participate in 3 events!"
+                    const message = "JC Members can only participate in 3 events!"
                     return res.redirect(302, `/register?msg=${encodeURIComponent(message)}`)
                 }
             }
+
+
+
+
+            //for Chairpersons
+            else if (tyroMem.designation === "Chairperson") {
+
+                //JC can only participate in any 3 events
+                if (!Array.isArray(events)) {
+                    events = Array.from([events]);
+                }
+
+                if ((events.length + teamCount) <= 3) {
+                    console.log(events.length,teamCount)
+
+                    next();
+                }
+
+                else {
+                    console.log("Chairpersons can only participate in 3 events!")
+
+                    //set the req message
+
+                    const message = "Chairpersons can only participate in 3 events!"
+                    return res.redirect(302, `/register?msg=${encodeURIComponent(message)}`)
+                }
+            }
+
+
+
+            //for Cordinators
+            else if (tyroMem.designation === "Cordinator") {
+
+                //JC can only participate in any 3 events
+                if (!Array.isArray(events)) {
+                    events = Array.from([events]);
+                }
+
+                if (events.length + teamCount <= 4) {
+
+                    next();
+                }
+
+                else {
+                    console.log("Cordinators can only participate in 4 events!")
+
+                    //set the req message
+
+                    const message = "Cordinators can only participate in 4 events!"
+                    return res.redirect(302, `/register?msg=${encodeURIComponent(message)}`)
+                }
+            }
+
 
 
 
@@ -767,44 +889,44 @@ async function userParticipationValidation(req, res, next) {
         }
 
         //check for normal students 
-        else{
+        else {
 
             //check for student of SRMS CET (can participate in 7 events)
-            if (student.college==="SRMS CET"){
+            if (student.college === "SRMS CET") {
 
-                if (!Array.isArray(events)){
-                    events=Array.from([events]);
+                if (!Array.isArray(events)) {
+                    events = Array.from([events]);
                 }
 
-                if (events.length+teamCount<=7){
+                if (events.length + teamCount <= 7) {
                     next();
                 }
 
-                else{
+                else {
                     console.log("Students of SRMS CET can participate in maximum 7 events!")
 
                     //set the req message
-                    const message="Students of SRMS CET can participate in maximum 7 events!"
+                    const message = "Students of SRMS CET can participate in maximum 7 events!"
                     return res.redirect(302, `/register?msg=${encodeURIComponent(message)}`)
                 }
             }
 
 
             // check for other college students 
-            else{
-                if (!Array.isArray(events)){
-                    events=Array.from([events]);
+            else {
+                if (!Array.isArray(events)) {
+                    events = Array.from([events]);
                 }
-                if (events.length+teamCount<=5){
+                if (events.length + teamCount <= 5) {
                     next();
                 }
 
-                else{
+                else {
 
                     console.log("Student of other colleges can participate in maximum 5 events!")
 
                     //set the req message
-                    const message="Student of other colleges can participate in maximum 5 events!"
+                    const message = "Student of other colleges can participate in maximum 5 events!"
                     return res.redirect(302, `/register?msg=${encodeURIComponent(message)}`)
 
                 }
@@ -814,7 +936,7 @@ async function userParticipationValidation(req, res, next) {
         }
 
 
-        
+
     } catch (error) {
         console.log(error)
         next();
@@ -830,9 +952,9 @@ router.post("/updateEvent/:id", verifyUser, userParticipationValidation, async (
 
     // if no event is selected then it is undefined so set it to empty array
 
-    const events = req.body.events||[]
+    const events = req.body.events || []
     const pid = req.params.id
-    console.log(pid,events)
+    console.log(pid, events)
 
 
     //GET individual event
@@ -846,7 +968,7 @@ router.post("/updateEvent/:id", verifyUser, userParticipationValidation, async (
 
     try {
         const update = await Individual.updateOne({ pid: pid }, { $set: { singleEvent: events } }).then(async () => {
-            const student = await getStudentDataPID(pid)||null;
+            const student = await getStudentDataPID(pid) || null;
 
             res.render("register", { username: req.user.username, message: "Events Updated Sucessfully!", student: student, event: individualEvents });
         });
@@ -856,7 +978,7 @@ router.post("/updateEvent/:id", verifyUser, userParticipationValidation, async (
     }
 
 
-    
+
 
 })
 
@@ -875,9 +997,9 @@ router.post("/register", verifyUser, async (req, res) => {
     const existingUser = await Individual.findOne({ rollno: rollno });
 
     if (existingUser) {
-        const msg= "User Already Exists! PID:- "+existingUser['pid']
+        const msg = "User Already Exists! PID:- " + existingUser['pid']
 
-        res.render("register", { username: req.user.username, message:msg, username: null, student: null, event: null });
+        res.render("register", { username: req.user.username, message: msg, username: null, student: null, event: null });
     }
 
     else {
@@ -929,7 +1051,7 @@ router.post("/register", verifyUser, async (req, res) => {
 router.get("/tid", verifyUser, async (req, res) => {
     //GET individual event
     const teamEvents = await getTeamEvents()
-    res.render("addTID", { username: req.user.username, message: null, student: null, event: teamEvents ,search:null})
+    res.render("addTID", { username: req.user.username, message: null, student: null, event: teamEvents, search: null })
 })
 
 module.exports = router;
