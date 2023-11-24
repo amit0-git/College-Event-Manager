@@ -2,6 +2,8 @@ const express = require("express")
 const mongoose = require("mongoose")
 const cookieParser = require('cookie-parser');
 
+const cors = require('cors');
+
 
 
 
@@ -18,11 +20,17 @@ const User = require("./databaseModels/user")
 
 require('dotenv').config()
 
+
 //mongodb connection
 mongoose.connect('mongodb://127.0.0.1:27017/users');
 
 
 app = express()
+
+
+
+
+app.use(cors())
 
 //auth routes use
 app.use('/', authRoutes);
@@ -57,6 +65,9 @@ app.get("/",(req,res)=>{
 app.use(express.static("public"));
 
 
-app.listen(port, () => {
-    console.log("Server Started on PORT: ", port);
-})
+
+const server = app.listen(port, '0.0.0.0',() => {
+    const { address, port } = server.address();
+    console.log(`Server running at http://${address}:${port}`);
+    console.log(`Server IP address: ${address}`);
+  });

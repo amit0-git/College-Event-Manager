@@ -189,10 +189,11 @@ router.get("/jc", verifyJC, async (req, res) => {
 
 
 
-    const studentCount = await totalStudentsCount();
-    const teamCount = await totalTeamsRegistered();
-    const teamEvent = await getTeamEvents();
-    const indiEvents = await getIndividualEvents();
+    const studentCount = await totalStudentsCount(); //get total students
+    const teamCount = await totalTeamsRegistered();  //total teams registered
+    const teamEvent = await getTeamEvents();     //get all the team events
+    const indiEvents = await getIndividualEvents(); //get all the individual events
+
     const data = {
         students: studentCount,
         teams: teamCount,
@@ -269,6 +270,8 @@ router.post("/jcLogin", async (req, res) => {
 
 
 router.get("/expandTeam", verifyJC, async (req, res) => {
+    //display details of the pid in the table
+
     let tid = req.query.tidInp.toUpperCase()
 
     //first get the detail of the tid members
@@ -287,7 +290,11 @@ router.get("/expandTeam", verifyJC, async (req, res) => {
 
 
                 let pidData = await Individual.findOne({ pid: members[i] })
-                data[members[i]] = { "pid": pidData['pid'], "name": pidData['name'], "rollno": pidData['rollno'], branch: pidData['branch'], "college": pidData['college'], "year": pidData['year'], "phone": pidData['phone'] }
+
+                if (pidData){
+                    data[members[i]] = { "pid": pidData['pid'], "name": pidData['name'], "rollno": pidData['rollno'], branch: pidData['branch'], "college": pidData['college'], "year": pidData['year'], "phone": pidData['phone'] }
+                }
+              
 
             }
             console.log(data)
@@ -323,6 +330,9 @@ router.get("/expandTeam", verifyJC, async (req, res) => {
 
 
 router.get("/exportTeam/:name", async (req, res) => {
+    //export team event data in excel format
+
+
     const name = req.params.name
 
     const data = await Team.find({ event: name })

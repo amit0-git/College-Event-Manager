@@ -10,6 +10,7 @@
 <body>
 
   <%- include("partials/header"); %>
+
   <div id="loading"><img src="/assets/loading.gif" alt="" srcset=""></div>
 
   <div id="teamWrapper">
@@ -379,6 +380,10 @@
 
 
   <script>
+    //server ip
+
+    const server = "10.0.14.242" || "localhost"
+
     const pids = []
 
     let eventMax;
@@ -387,8 +392,8 @@
 
     //add button
 
-    const btn = document.getElementById("btn");
-    btn.addEventListener("click", addData);
+    const btn1 = document.getElementById("btn");
+    btn1.addEventListener("click", addData);
 
     //save Team Btn
 
@@ -415,6 +420,25 @@
 
     //loading
     const loading = document.getElementById('loading');
+
+
+    //disable the add button while loading one request
+
+    async function disableBtn(){
+
+
+      btn.disabled=true
+      btn.style.background="grey"
+
+    }
+
+    async function enableBtn(){
+
+
+      btn.disabled=false
+      btn.style.background="#007bff"
+
+}
 
     // Function to display loading icon and hide content
     async function showLoading() {
@@ -447,7 +471,7 @@
       try {
 
 
-        const response = await fetch("http://localhost:3000/checkTeamCondition", options);
+        const response = await fetch("http://" + server + ":3000/checkTeamCondition", options);
         const result = await response.json();
 
         return result;
@@ -538,7 +562,7 @@
         try {
 
 
-          const response = await fetch("http://localhost:3000/checkPidTeam", options);
+          const response = await fetch("http://" + server + ":3000/checkPidTeam", options);
           const result = await response.json();
 
           if (result) {
@@ -592,8 +616,11 @@
 
       try {
 
-        const send = await fetch("http://localhost:3000/saveTeam", options).then(response => response.json())
+        const send = await fetch("http://" + server + ":3000/saveTeam", options).then(response => response.json())
           .then(async result => {
+
+            //after saving the team clear the array
+            pids.length = 0
 
             await clearHTML();
 
@@ -606,8 +633,6 @@
             error.innerHTML = "Team Successfully Saved!"
             console.log('POST request successful:', result);
 
-            //after saving the team clear the array
-            pids.length = 0
 
 
           })
@@ -633,6 +658,9 @@
 
     // }
 
+
+
+
     async function getMax() {
 
       await clearHTML();
@@ -646,7 +674,7 @@
         teamH1.innerHTML = "Create Team: " + val
         try {
           // Make a GET request to a URL
-          const response = await fetch('http://localhost:3000/getMax/' + val);
+          const response = await fetch('http://' + server + ':3000/getMax/' + val);
 
           // Check if the request was successful (status code 200)
           if (!response.ok) {
@@ -656,7 +684,7 @@
 
           // Parse the response JSON
           const data = await response.json();
-          console.log(data)
+          console.log("get max:", data)
           eventMax = data
 
 
@@ -679,6 +707,9 @@
 
       await showLoading();
 
+      await disableBtn();
+    
+
 
 
       try {
@@ -689,135 +720,114 @@
 
 
 
-        let pid = document.getElementById("pidinp").value
+        let pid = document.getElementById("pidinp").value.toUpperCase()
+
+        const pidArrayCheck = await pids.includes(pid) //check whether array contains same pid
+
+        //check whether pid is registered with same event
+        const pidExists = await isPIDregisteredWithSameEvent(pid);
 
 
+        //fetch details of the PID
+        const data = await fetchData(pid)
 
-
-        if (await !eventMax) {
-          //check whether event is selected
+        if (pidArrayCheck) {
+          //if we are trying to add same PID
+          console.log("pid array check:", pidArrayCheck)
+          console.log("pids:", pids)
+          await enableBtn();
           await hideLoading()
-          return error.innerHTML = "Please Select Event!"
-        }
+          return error.innerHTML = "PID already added!"
 
-        if (await !pid) {
+        } else if (!eventMax) {
+          console.log("Evnt mx:", eventMax)
+          //check whether event is selected
+          
+          await hideLoading()
+          await enableBtn();
+          return error.innerHTML = "Please Select Event!"
+        } else if (!pid) {
           //if the pid input is empty
           await hideLoading()
+          await enableBtn()
           return error.innerHTML = "Please Enter PID!"
         }
 
         //check whether you are not adding same pid to team event
 
-        if (await pids.includes(pid)) {
-          //if we are trying to add same PID
-          await hideLoading()
-          return error.innerHTML = "PID already added!"
-        }
+
 
         //check whether the team limit exceeded
-
-        if (await pids.length >= await eventMax['data']) {
+        else if (await pids.length >= await eventMax['data']) {
           await hideLoading()
+          await enableBtn();
           return error.innerHTML = "Event Limit Exceeded!"
-        }
-
-
-
-        pid = pid.toUpperCase()
-
-        //fetch details of the PID
-        const data = await fetchData(pid);
-
-        if (data['student'] === "Not Found") {
+        } else if (data['student'] === "Not Found") {
           //if the server return not found
           await hideLoading()
+          await enableBtn();
           return error.innerHTML = "NO PID Found!"
-        } 
-        
-        else {
-          //if the pid is found
-
-
-          //new logic 
-
-          const pidExists = await isPIDregisteredWithSameEvent(pid);
-
-          if (pidExists['status']) {
-            //if the PID is registered with same event
-
-            error.innerHTML = "PID already In the team!"
-            console.log("pid exists", pidExists['data'])
-            await generateHTMLForTID(pidExists['data'], null)
-
-          } else {
-            //if the PID is not registered same event
-
-            //check the roles of student for participation
-            const studentRoleVerify = await checkParticipationCondition(pid);
-
-            console.log("role verify", studentRoleVerify)
-
-            if (studentRoleVerify['status']) {
-              //if the role is verified and user is allowed to participate
-              pids.push(pid)
-              await createHTML(data)
-
-
-            } else {
-              //if the role is not verified and PID not registered with the  event
-              console.log(pidExists['data'])
-
-
-              error.innerHTML = studentRoleVerify['data']
-            }
-
-
-          }
+        }
+         else if (pidExists['status']) {
+          //if the PID is registered with same event
           await hideLoading()
+          await enableBtn();
+          await generateHTMLForTID(pidExists['data'], null)
+          console.log("pid exists", pidExists['data'])
+          return error.innerHTML = "PID already In the team!"
+         
 
-
+          
 
         }
-      }
+
+         else {
+          //if the PID is not registered same event
+
+          //check the roles of student for participation
+          const studentRoleVerify = await checkParticipationCondition(pid);
+
+          console.log("role verify", studentRoleVerify)
+
+          if (studentRoleVerify['status']) {
+            //if the role is verified and user is allowed to participate
+
+            await pids.push(pid)
+            //wait for the pid to enter in the database
+            await createHTML(data)
+
+
+          } else {
+            //if the role is not verified and PID not registered with the  event
+            await hideLoading()
+            await enableBtn();
+            console.log(pidExists['data'])
+
+
+            return error.innerHTML = studentRoleVerify['data']
+          }
+          await hideLoading()
+          await enableBtn();
+
+        }
+   
 
 
 
-      catch(error){
+      } 
+      
+      catch (error) {
         await hideLoading()
-        console.log("Add Data Error: ",error)
+        await enableBtn();
+        console.log("Add Data Error: ", error)
       }
 
-      // //check the roles of student for participation
-      // const studentRoleVerify = await checkParticipationCondition(pid);
-
-      // console.log("verify", studentRoleVerify)
-
-      // if (studentRoleVerify['status']) {
-
-      //   const data1 = await isPIDregisteredWithSameEvent(pid);
-      //   if (data1) {
-      //     error.innerHTML = "PID already In the team!"
-      //     console.log(data1['data'])
-      //     await generateHTMLForTID(data1['data'], null)
-      //   } else {
-      //     await createHTML(data)
-      //     pids.push(pid)
-      //   }
-
-      // } else {
-      //   const data1 = await isPIDregisteredWithSameEvent(pid);
-      //   console.log("data1 after role", data1)
-      //   if (data1) {
-      //     await generateHTMLForTID(data1['data'], null)
-      //   }
-
-      //   error.innerHTML = studentRoleVerify['data']
-      // }
-
-
-
+      
 
     }
+
+
+
 
     async function createHTML(data) {
       //function to create dynamic HTML
@@ -865,7 +875,7 @@
 
       try {
         // Make a GET request to a URL
-        const response = await fetch('http://localhost:3000/pid/' + pid);
+        const response = await fetch('http://' + server + ':3000/pid/' + pid);
 
         // Check if the request was successful (status code 200)
         if (!response.ok) {

@@ -1,12 +1,12 @@
 {
   "name": "zest-2k23",
   "version": "1.0.0",
-  "description": "",
+  "description": "<h1> COLLEGE EVENT MANAGER </h1>",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Amit Verma",
   "license": "ISC"
 }

@@ -437,7 +437,8 @@ router.get("/getMax/:id", verifyUser, async (req, res) => {
     try {
 
         const mx = await Event.findOne({ event: name })
-        console.log(mx.limit)
+        
+        console.log("max limit",mx.limit)
 
         res.json({ data: mx.limit })
     }
