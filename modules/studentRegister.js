@@ -483,7 +483,7 @@ router.post("/saveTeam", verifyUser, async (req, res) => {
 })
 
 //delete tid 
-router.get("/deleteTeam/:id", async (req, res) => {
+router.get("/deleteTeam/:id", verifyAdmin,async (req, res) => {
     const tid = req.params.id
 
     //delete the  individual event user from the table

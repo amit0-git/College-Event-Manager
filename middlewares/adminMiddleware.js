@@ -26,6 +26,7 @@ async function verifyAdmin(req, res, next) {
             else {
 
                 console.log("ADMIN Verified!")
+                console.log(authData)
 
                 if (authData.role === "admin") {
                     //if the admin role is verified
