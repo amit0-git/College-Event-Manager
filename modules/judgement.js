@@ -247,7 +247,7 @@ router.post("/jcLogin", async (req, res) => {
     //generate a token for the payload
 
     const token = await jwt.sign(userPayload, process.env.SECRET_KEY, {
-        expiresIn: '1300s', // Token expiration time
+        expiresIn: '300m', // Token expiration time
 
     });
 
@@ -346,7 +346,7 @@ router.get("/exportTeam/:name", async (req, res) => {
 
         worksheet.getCell('A1').value = name
 
-        worksheet.mergeCells('A1:B1')
+        worksheet.mergeCells('A1:C1')
         worksheet.getCell('A1').alignment = { horizontal: 'center' }
 
 
@@ -366,7 +366,7 @@ router.get("/exportTeam/:name", async (req, res) => {
         worksheet.columns = [
             { key: "tid", width: 15 },
             { key: "teamname", width: 25 },
-            { key: "members", width: 100 },
+            { key: "members", width: 120 },
 
         ];
 

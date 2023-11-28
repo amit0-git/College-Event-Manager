@@ -141,6 +141,8 @@ router.get("*/print", async (req, res) => {
     for (const i in data) {
         nested = []
         nested.push(data[i]['tid'])
+        nested.push(data[i]['name'])
+
         nested.push(data[i]['event'])
         nested.push(await getEventVenue(data[i]['event']))
         nested.push(await getEventTime(data[i]['event']))
