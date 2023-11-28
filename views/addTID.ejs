@@ -32,6 +32,8 @@
 
       <div class="form-container">
         <h1>Add Members</h1>
+        <label for="pidinp">Add Team Name</label>
+        <input type="text" name="teamName" id="teamName" placeholder="Team Name is Optional">
         <label for="pidinp">Add PID</label>
         <input type="text" name="pidInp" id="pidinp" required>
         <button name="btn" id="btn">Add</button>
@@ -382,7 +384,8 @@
   <script>
     //server ip
 
-    const server ="192.168.102.115"
+
+    const server = "localhost"
 
     const pids = []
 
@@ -408,6 +411,8 @@
     teamDrop.addEventListener("change", getMax);
 
 
+
+
     const error = document.getElementById("error");
 
     //TID Result
@@ -424,21 +429,21 @@
 
     //disable the add button while loading one request
 
-    async function disableBtn(){
+    async function disableBtn() {
 
 
-      btn.disabled=true
-      btn.style.background="grey"
+      btn.disabled = true
+      btn.style.background = "grey"
 
     }
 
-    async function enableBtn(){
+    async function enableBtn() {
 
 
-      btn.disabled=false
-      btn.style.background="#007bff"
+      btn.disabled = false
+      btn.style.background = "#007bff"
 
-}
+    }
 
     // Function to display loading icon and hide content
     async function showLoading() {
@@ -582,67 +587,151 @@
 
 
 
-    async function saveTeamEvent() {
-      console.log(pids)
 
-      //function to save data to teamEvents
-      if (!eventMax) {
-        //check whether event is selected
-        return error.innerHTML = "Please Select Event!"
+    async function checkTeamName() {
+      //get team name 
+
+
+      let team = document.getElementById("teamName").value
+      console.log("Check Team Name Called",team)
+
+      if (!team){
+       team="null"
+      }
+
+      else{
+        team = team.toUpperCase()
+      }
+      
+
+
+      try {
+
+
+        if (team) {
+          const options = {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              name: team,
+
+            }),
+          };
+
+          //send the request
+          const response = await fetch("http://" + server + ":3000/checkTeamName", options);
+          const result = await response.json();
+
+
+          //return the response
+          return result;
+          
+
+
+
+          console.log(result)
+
+          //if end
+        }
+
+
+      } catch (error) {
+        console.log(error)
       }
 
 
 
-      if (pids.length === 0) {
+
+    }
+
+
+
+    async function saveTeamEvent() {
+      //get team event name
+      const teamName = document.getElementById("teamName").value
+
+      console.log(pids)
+
+      const teamStatus = await checkTeamName();
+
+      //function to chek the team name status
+      //if not 
+      console.log("team:", teamStatus)
+
+      if (teamStatus['status'] === true) {
+        return error.innerHTML = "Team Name Already Exists!"
+      }
+
+      //function to save data to teamEvents
+      else if (!eventMax) {
+        //check whether event is selected
+        return error.innerHTML = "Please Select Event!"
+      } else if (pids.length === 0) {
         return error.innerHTML = "Please add PID!"
       }
 
 
 
-      console.log("save Team", pids)
-
-      const data = pids
-      const options = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-
-        },
-        body: JSON.stringify({
-          event: teamDrop.value,
-          data: data
-        })
-      };
-
-      try {
-
-        const send = await fetch("http://" + server + ":3000/saveTeam", options).then(response => response.json())
-          .then(async result => {
-
-            //after saving the team clear the array
-            pids.length = 0
-
-            await clearHTML();
-
-            //display the TID of the team after saving the team
-
-
-            await generateHTMLForTID(null, result)
-
-            //tidR.innerHTML=result['message']['tid']
-            error.innerHTML = "Team Successfully Saved!"
-            console.log('POST request successful:', result);
+      //if the above conditions are checked
+      else {
 
 
 
+
+
+        console.log("save Team", pids)
+
+        const data = pids
+        const options = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+
+          },
+          body: JSON.stringify({
+            event: teamDrop.value,
+            name: teamName,
+            data: data
           })
-          .catch(error => {
-            console.error('Error during POST request:', error);
-          });
+        };
 
-      } catch (error) {
-        console.log(error)
+        try {
+
+          const send = await fetch("http://" + server + ":3000/saveTeam", options).then(response => response.json())
+            .then(async result => {
+
+              //after saving the team clear the array
+              pids.length = 0
+
+              await clearHTML();
+
+              //display the TID of the team after saving the team
+
+
+              await generateHTMLForTID(null, result)
+
+              //tidR.innerHTML=result['message']['tid']
+              error.innerHTML = "Team Successfully Saved!"
+              console.log('POST request successful:', result);
+
+
+
+            })
+            .catch(error => {
+              console.error('Error during POST request:', error);
+            });
+
+        } catch (error) {
+          console.log(error)
+        }
+
+
       }
+
+
+
 
     }
 
@@ -708,7 +797,7 @@
       await showLoading();
 
       await disableBtn();
-    
+
 
 
 
@@ -742,7 +831,7 @@
         } else if (!eventMax) {
           console.log("Evnt mx:", eventMax)
           //check whether event is selected
-          
+
           await hideLoading()
           await enableBtn();
           return error.innerHTML = "Please Select Event!"
@@ -767,21 +856,18 @@
           await hideLoading()
           await enableBtn();
           return error.innerHTML = "NO PID Found!"
-        }
-         else if (pidExists['status']) {
+        } else if (pidExists['status']) {
           //if the PID is registered with same event
           await hideLoading()
           await enableBtn();
           await generateHTMLForTID(pidExists['data'], null)
           console.log("pid exists", pidExists['data'])
           return error.innerHTML = "PID already In the team!"
-         
 
-          
 
-        }
 
-         else {
+
+        } else {
           //if the PID is not registered same event
 
           //check the roles of student for participation
@@ -810,19 +896,17 @@
           await enableBtn();
 
         }
-   
 
 
 
-      } 
-      
-      catch (error) {
+
+      } catch (error) {
         await hideLoading()
         await enableBtn();
         console.log("Add Data Error: ", error)
       }
 
-      
+
 
     }
 

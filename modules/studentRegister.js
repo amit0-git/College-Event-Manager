@@ -400,6 +400,58 @@ router.get("/pid/:id", verifyUser, async (req, res) => {
 
 })
 
+
+
+
+//check team name
+
+router.post("/checkTeamName", async (req, res) => {
+
+
+    console.log("checkTeamName called")
+
+
+    const name1 = req.body.name
+    console.log("asas: ", name1)
+
+
+
+    try {
+
+
+        if (name1!=="null") {
+            console
+            const team = await Team.findOne({ name: name1 })
+
+            console.log("teammmmm", team)
+            if (team) {
+
+                res.json({ status: true })
+            }
+
+
+            else {
+                res.json({ status: false })
+            }
+        }
+
+
+        else{
+            res.json({ status: false })
+
+        //if the name is not defined then return false
+        }
+
+
+
+
+    }
+
+
+    catch (error) {
+        console.log(error)
+    }
+})
 //check pid team
 
 router.post("/checkPidTeam", async (req, res) => {
@@ -437,8 +489,8 @@ router.get("/getMax/:id", verifyUser, async (req, res) => {
     try {
 
         const mx = await Event.findOne({ event: name })
-        
-        console.log("max limit",mx.limit)
+
+        console.log("max limit", mx.limit)
 
         res.json({ data: mx.limit })
     }
@@ -461,6 +513,8 @@ router.post("/saveTeam", verifyUser, async (req, res) => {
     const tid = "T" + Number(lastCount + 1)
     const team = await new Team({
         tid: tid,
+        name: data['name'].toUpperCase(),  ///team name
+
         event: data['event'],
         members: data['data']
     })
@@ -483,7 +537,7 @@ router.post("/saveTeam", verifyUser, async (req, res) => {
 })
 
 //delete tid 
-router.get("/deleteTeam/:id", verifyAdmin,async (req, res) => {
+router.get("/deleteTeam/:id", verifyAdmin, async (req, res) => {
     const tid = req.params.id
 
     //delete the  individual event user from the table
@@ -658,7 +712,7 @@ router.post("/checkTeamCondition", async (req, res) => {
 
                 //JC can only participate in any 3 events
 
-                if ((indiCount + teamCount < 4) ) {
+                if ((indiCount + teamCount < 4)) {
 
                     res.json({ status: true, data: "" })
                 }
@@ -793,7 +847,7 @@ async function userParticipationValidation(req, res, next) {
                     events = Array.from([events]);
                 }
 
-                if (events.length===1) {
+                if (events.length === 1) {
                     next();
                 }
                 else {
@@ -842,7 +896,7 @@ async function userParticipationValidation(req, res, next) {
                 }
 
                 if ((events.length + teamCount) <= 3) {
-                    console.log(events.length,teamCount)
+                    console.log(events.length, teamCount)
 
                     next();
                 }

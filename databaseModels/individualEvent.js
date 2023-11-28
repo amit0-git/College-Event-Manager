@@ -8,7 +8,8 @@ const individualSchema = new mongoose.Schema({
 
     pid: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     rollno: {
         type: String,
