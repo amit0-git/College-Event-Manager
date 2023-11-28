@@ -43,65 +43,106 @@ const individualSchema = new mongoose.Schema({
 
 
 
+individualSchema.pre("save", async function (next) {
+    try {
+        const prevCount = await Count.findOne({ name: "lastCount" });
+
+        if (prevCount) {
+            // Increment count if the document exists
+            const val = prevCount.count + 1;
+
+            try {
+                const result = await Count.updateOne(
+                    { name: "lastCount" }, // Match criteria
+                    { $set: { count: val } } // Update values
+                );
+
+                if (result && result.modifiedCount === 1) {
+                    console.log('Last Count Individual updated successfully');
+                } else {
+                    console.log('Last Count Individual not found or not updated');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        } else {
+            // Create a new document if 'lastCount' document doesn't exist
+            const cc = new Count({
+                name: "lastCount",
+                count: 1
+            });
+
+            await cc.save();
+        }
+
+        next(); // Call next after processing
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+});
+
 
 
 //pre hook to increment the value of lastCount table before any save request is made on individualEvent
 
-individualSchema.pre("save", async function (next) {
+// individualSchema.pre("save", async function (next) {
 
-    try {
+//     try {
 
-        const prevCount = await Count.findOne({ name: "lastCount" })
+//         const prevCount = await Count.findOne({ name: "lastCount" })
 
-        if (prevCount) {
-            //if the prevCount Value is present then increment it
+//         if (prevCount) {
+//             //if the prevCount Value is present then increment it
 
-            const val = prevCount.count
+//             const val = prevCount.count
 
-            try {
-                const result = await Count.updateOne(
-                  { name: "lastCount"}, // Match criteria
-                  { $set: { count: val+1} } // Update values
-                );
+//             try {
+//                 const result = await Count.updateOne(
+//                   { name: "lastCount"}, // Match criteria
+//                   { $set: { count: val+1} } // Update values
+//                 );
+
+         
             
-                if (result.nModified === 1) {
-                  console.log('Document updated successfully');
-                } else {
-                  console.log('Document not found or not updated');
-                }
-              } catch (err) {
-                console.error(err);
-              }
+//                 if (result.modifiedCount === 1) {
+//                   console.log('Document updated successfully');
+//                 } else {
+//                   console.log('Document not found or not updated');
+//                 }
+//               } catch (err) {
+//                 console.error(err);
+//               }
 
-            next();
-        }
-        else {
-            //if the record is not found then save the value of last count as 1
+//             next();
+//         }
+//         else {
+//             //if the record is not found then save the value of last count as 1
 
-            const cc = new Count({
-                name: "lastCount",
-                count: 1
+//             const cc = new Count({
+//                 name: "lastCount",
+//                 count: 1
 
-            })
+//             })
 
-            await cc.save().catch((error) => {
-                console.log(error);
-            })
+//             await cc.save().catch((error) => {
+//                 console.log(error);
+//             })
 
             
-        }
+//         }
 
 
 
-        next();
-    }
+//         next();
+//     }
 
-    catch (error) {
-        console.log(error);
-        next(error);
-    }
+//     catch (error) {
+//         console.log(error);
+//         next(error);
+//     }
 
-})
+// })
 
 
 

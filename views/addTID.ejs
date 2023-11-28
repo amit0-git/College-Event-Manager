@@ -11,6 +11,8 @@
 
   <%- include("partials/header"); %>
 
+  <div id="loading"><img src="/assets/loading.gif" alt="" srcset=""></div>
+
   <div id="teamWrapper">
 
     <div id="left">
@@ -62,7 +64,7 @@
 
       <form action="/searchPIDtid" method="POST">
         <input type="text" name="pid" placeholder="Search PID or TID" required id="pid">
-        
+
         <input type="submit" value="Submit" id="pidSubmit">
       </form>
 
@@ -118,6 +120,25 @@
 
 
   <style>
+    #loading {
+      text-align: center;
+
+      padding: 5px;
+      display: none;
+
+
+
+
+    }
+
+    #loading img {
+      height: 300px;
+      width: 300px;
+      transform: translate(-50%, 50%);
+      position: absolute;
+
+    }
+
     /* General styles */
     body {
       font-family: Arial, sans-serif;
@@ -134,7 +155,7 @@
       display: flex;
       justify-content: space-around;
       margin-top: 15px;
-  
+
     }
 
     #left {
@@ -148,7 +169,8 @@
     .form-container {
       margin-bottom: 20px;
     }
-    .form-container h1{
+
+    .form-container h1 {
       color: blue;
     }
 
@@ -202,12 +224,14 @@
       color: rgb(255, 119, 0)
     }
 
-    #middle th,#right th {
+    #middle th,
+    #right th {
       background-color: rgb(218, 158, 46);
 
     }
 
-    #middle td,#right td {
+    #middle td,
+    #right td {
       font-size: 13px;
     }
 
@@ -232,7 +256,7 @@
     }
 
     th {
- 
+
       font-weight: bold;
       color: white;
 
@@ -255,7 +279,8 @@
       width: 450px;
       height: 600px;
     }
-    #right h1{
+
+    #right h1 {
       color: red;
     }
 
@@ -276,7 +301,7 @@
       border: 1px solid #ccc;
     }
 
-  
+
 
     button {
       width: 100%;
@@ -289,7 +314,8 @@
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
-    label{
+
+    label {
       font-weight: bold;
     }
 
@@ -313,7 +339,7 @@
       color: red;
       font-size: 20px;
       font-weight: bold;
-      
+
     }
 
     #teamDel:hover {
@@ -336,15 +362,16 @@
       transition: background-color 0.3s ease;
     }
 
-    #pidSubmit{
+    #pidSubmit {
       background-color: blueviolet;
       color: white;
       padding: 10px;
       border: none;
     }
-    #pid{
+
+    #pid {
       padding: 10px;
-      
+
     }
   </style>
 
@@ -353,6 +380,10 @@
 
 
   <script>
+    //server ip
+
+    const server ="192.168.102.115"
+
     const pids = []
 
     let eventMax;
@@ -361,8 +392,8 @@
 
     //add button
 
-    const btn = document.getElementById("btn");
-    btn.addEventListener("click", addData);
+    const btn1 = document.getElementById("btn");
+    btn1.addEventListener("click", addData);
 
     //save Team Btn
 
@@ -387,6 +418,39 @@
     const del = document.getElementById("teamDel")
 
 
+    //loading
+    const loading = document.getElementById('loading');
+
+
+    //disable the add button while loading one request
+
+    async function disableBtn(){
+
+
+      btn.disabled=true
+      btn.style.background="grey"
+
+    }
+
+    async function enableBtn(){
+
+
+      btn.disabled=false
+      btn.style.background="#007bff"
+
+}
+
+    // Function to display loading icon and hide content
+    async function showLoading() {
+      loading.style.display = 'block';
+
+    }
+
+    // Function to hide loading icon and display content
+    async function hideLoading() {
+      loading.style.display = 'none';
+
+    }
 
     //function to check the condition for participation for different students
     async function checkParticipationCondition(pid) {
@@ -407,7 +471,7 @@
       try {
 
 
-        const response = await fetch("http://localhost:3000/checkTeamCondition", options);
+        const response = await fetch("http://" + server + ":3000/checkTeamCondition", options);
         const result = await response.json();
 
         return result;
@@ -498,7 +562,7 @@
         try {
 
 
-          const response = await fetch("http://localhost:3000/checkPidTeam", options);
+          const response = await fetch("http://" + server + ":3000/checkPidTeam", options);
           const result = await response.json();
 
           if (result) {
@@ -552,8 +616,11 @@
 
       try {
 
-        const send = await fetch("http://localhost:3000/saveTeam", options).then(response => response.json())
+        const send = await fetch("http://" + server + ":3000/saveTeam", options).then(response => response.json())
           .then(async result => {
+
+            //after saving the team clear the array
+            pids.length = 0
 
             await clearHTML();
 
@@ -566,8 +633,6 @@
             error.innerHTML = "Team Successfully Saved!"
             console.log('POST request successful:', result);
 
-            //after saving the team clear the array
-            pids.length = 0
 
 
           })
@@ -593,6 +658,9 @@
 
     // }
 
+
+
+
     async function getMax() {
 
       await clearHTML();
@@ -606,7 +674,7 @@
         teamH1.innerHTML = "Create Team: " + val
         try {
           // Make a GET request to a URL
-          const response = await fetch('http://localhost:3000/getMax/' + val);
+          const response = await fetch('http://' + server + ':3000/getMax/' + val);
 
           // Check if the request was successful (status code 200)
           if (!response.ok) {
@@ -616,7 +684,7 @@
 
           // Parse the response JSON
           const data = await response.json();
-          console.log(data)
+          console.log("get max:", data)
           eventMax = data
 
 
@@ -636,65 +704,84 @@
 
     //function to add PID in the table 
     async function addData() {
-      //clear the previous TID exists data
-      await clearGenerateHTMLForTID()
+
+      await showLoading();
+
+      await disableBtn();
+    
+
+
+
+      try {
+
+        //clear the previous TID exists data
+        await clearGenerateHTMLForTID()
 
 
 
 
-      let pid = document.getElementById("pidinp").value
+        let pid = document.getElementById("pidinp").value.toUpperCase()
 
+        const pidArrayCheck = await pids.includes(pid) //check whether array contains same pid
 
-
-
-      if (!eventMax) {
-        //check whether event is selected
-        return error.innerHTML = "Please Select Event!"
-      }
-
-      if (!pid) {
-        //if the pid input is empty
-        return error.innerHTML = "Please Enter PID!"
-      }
-
-      //check whether you are not adding same pid to team event
-
-      if (pids.includes(pid)) {
-        //if we are trying to add same PID
-        return error.innerHTML = "PID already added!"
-      }
-
-      //check whether the team limit exceeded
-
-      if (pids.length >= eventMax['data']) {
-        return error.innerHTML = "Event Limit Exceeded!"
-      }
-
-
-
-      pid=pid.toUpperCase()
-      //fetch details of the PID
-      const data = await fetchData(pid);
-
-      if (data['student'] === "Not Found") {
-        //if the server return not found
-        return error.innerHTML = "NO PID Found!"
-      } else {
-        //if the pid is found
-
-
-        //new logic 
-
+        //check whether pid is registered with same event
         const pidExists = await isPIDregisteredWithSameEvent(pid);
 
-        if (pidExists['status']) {
+
+        //fetch details of the PID
+        const data = await fetchData(pid)
+
+        if (pidArrayCheck) {
+          //if we are trying to add same PID
+          console.log("pid array check:", pidArrayCheck)
+          console.log("pids:", pids)
+          await enableBtn();
+          await hideLoading()
+          return error.innerHTML = "PID already added!"
+
+        } else if (!eventMax) {
+          console.log("Evnt mx:", eventMax)
+          //check whether event is selected
+          
+          await hideLoading()
+          await enableBtn();
+          return error.innerHTML = "Please Select Event!"
+        } else if (!pid) {
+          //if the pid input is empty
+          await hideLoading()
+          await enableBtn()
+          return error.innerHTML = "Please Enter PID!"
+        }
+
+        //check whether you are not adding same pid to team event
+
+
+
+        //check whether the team limit exceeded
+        else if (await pids.length >= await eventMax['data']) {
+          await hideLoading()
+          await enableBtn();
+          return error.innerHTML = "Event Limit Exceeded!"
+        } else if (data['student'] === "Not Found") {
+          //if the server return not found
+          await hideLoading()
+          await enableBtn();
+          return error.innerHTML = "NO PID Found!"
+        }
+         else if (pidExists['status']) {
           //if the PID is registered with same event
-
-          error.innerHTML = "PID already In the team!"
-          console.log("pid exists", pidExists['data'])
+          await hideLoading()
+          await enableBtn();
           await generateHTMLForTID(pidExists['data'], null)
+          console.log("pid exists", pidExists['data'])
+          return error.innerHTML = "PID already In the team!"
+         
 
-        } else {
+          
+
+        }
+
+         else {
           //if the PID is not registered same event
 
           //check the roles of student for participation
@@ -705,57 +792,42 @@
           if (studentRoleVerify['status']) {
             //if the role is verified and user is allowed to participate
 
+            await pids.push(pid)
+            //wait for the pid to enter in the database
             await createHTML(data)
-            pids.push(pid)
+
 
           } else {
             //if the role is not verified and PID not registered with the  event
+            await hideLoading()
+            await enableBtn();
             console.log(pidExists['data'])
 
 
-            error.innerHTML = studentRoleVerify['data']
+            return error.innerHTML = studentRoleVerify['data']
           }
-
+          await hideLoading()
+          await enableBtn();
 
         }
+   
 
 
 
-
-        // //check the roles of student for participation
-        // const studentRoleVerify = await checkParticipationCondition(pid);
-
-        // console.log("verify", studentRoleVerify)
-
-        // if (studentRoleVerify['status']) {
-
-        //   const data1 = await isPIDregisteredWithSameEvent(pid);
-        //   if (data1) {
-        //     error.innerHTML = "PID already In the team!"
-        //     console.log(data1['data'])
-        //     await generateHTMLForTID(data1['data'], null)
-        //   } else {
-        //     await createHTML(data)
-        //     pids.push(pid)
-        //   }
-
-        // } else {
-        //   const data1 = await isPIDregisteredWithSameEvent(pid);
-        //   console.log("data1 after role", data1)
-        //   if (data1) {
-        //     await generateHTMLForTID(data1['data'], null)
-        //   }
-
-        //   error.innerHTML = studentRoleVerify['data']
-        // }
-
-
-
-
+      } 
+      
+      catch (error) {
+        await hideLoading()
+        await enableBtn();
+        console.log("Add Data Error: ", error)
       }
 
+      
 
     }
+
+
+
 
     async function createHTML(data) {
       //function to create dynamic HTML
@@ -803,7 +875,7 @@
 
       try {
         // Make a GET request to a URL
-        const response = await fetch('http://localhost:3000/pid/' + pid);
+        const response = await fetch('http://' + server + ':3000/pid/' + pid);
 
         // Check if the request was successful (status code 200)
         if (!response.ok) {

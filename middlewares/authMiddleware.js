@@ -11,6 +11,10 @@ async function verifyUser(req, res, next) {
     //middleware to verify identity of logged in user for protected routes
 
     const token = await req.cookies.jwt;
+   
+
+
+
 
     if (token) {
 
@@ -55,6 +59,7 @@ async function verifyUser(req, res, next) {
 
 async function isUserLoggedIn(req, res, next) {
     const token = await req.cookies.jwt;
+
 
     if (token) {
         jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {

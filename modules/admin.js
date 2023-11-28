@@ -136,7 +136,7 @@ router.post("/admin", async (req, res) => {
 
     //check whether the user exists
 
-    const user = await User.findOne({ username: "admin" });
+    const user = await User.findOne({ username: username });
 
     if (!user) {
         console.log("Username not found")
@@ -150,7 +150,7 @@ router.post("/admin", async (req, res) => {
     }
 
     if (user.role !== "admin") {
-        return res.render("admin", { message: "Not a Member of JC Commitee!", username: null })
+        return res.render("admin", { message: "Not a admin!", username: null })
     }
 
 
