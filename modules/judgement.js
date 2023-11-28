@@ -301,7 +301,7 @@ router.get("/expandTeam", verifyJC, async (req, res) => {
 
 
 
-            res.render("expandTeam", { data: data, tid: tidData['tid'], event: tidData['event'], username: req.user.username })
+            res.render("expandTeam", { data: data, tid: tidData['tid'], event: tidData['event'],name:tidData['name'] ,username: req.user.username })
 
 
 
@@ -351,7 +351,7 @@ router.get("/exportTeam/:name", async (req, res) => {
 
 
 
-        const columnHeaderRow = worksheet.addRow(['TID', 'MEMBERS']);
+        const columnHeaderRow = worksheet.addRow(['TID','TEAM NAME', 'MEMBERS']);
 
 
         columnHeaderRow.eachCell(cell => {
@@ -365,6 +365,7 @@ router.get("/exportTeam/:name", async (req, res) => {
 
         worksheet.columns = [
             { key: "tid", width: 15 },
+            { key: "teamname", width: 25 },
             { key: "members", width: 100 },
 
         ];
@@ -379,7 +380,7 @@ router.get("/exportTeam/:name", async (req, res) => {
 
         for (const i in data) {
             jsonData["tid"] = data[i]['tid']
-          
+            jsonData["teamname"] = data[i]['name']
             jsonData["members"] = data[i]['members']
 
 

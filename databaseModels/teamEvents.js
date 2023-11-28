@@ -8,12 +8,22 @@ const teamSchema = new mongoose.Schema({
 
     tid: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
+    
+    name:{
+
+        type:String,
+        required:false
+    },
+
+
     event: {
         type: String,
         required: true
     },
+
     members: {
         type: [String],
         required: true
