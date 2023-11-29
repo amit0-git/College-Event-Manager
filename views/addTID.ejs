@@ -385,7 +385,7 @@
     //server ip
 
 
-    const server = "localhost"
+    const server ="172.16.0.187"
 
     const pids = []
 
@@ -600,7 +600,10 @@
       }
 
       else{
+        //trim extra space
+        team=team.trim()
         team = team.toUpperCase()
+        
       }
       
 
@@ -650,7 +653,11 @@
 
     async function saveTeamEvent() {
       //get team event name
-      const teamName = document.getElementById("teamName").value
+      let teamName = document.getElementById("teamName").value
+
+      //trim extra space
+
+      teamName=teamName.trim()
 
       console.log(pids)
 
