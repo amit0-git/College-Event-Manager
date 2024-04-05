@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 
 
+const { Html5Qrcode } = require('html5-qrcode');
 
 
 
@@ -13,7 +14,7 @@ const cors = require('cors');
 const authRoutes = require('./modules/auth');
 const studentRoutes = require('./modules/studentRegister');
 const adminRoutes = require('./modules/admin');
-const jcRoutes=require("./modules/judgement")
+const jcRoutes = require("./modules/judgement")
 
 //USER SCHEMA
 const User = require("./databaseModels/user")
@@ -54,21 +55,23 @@ const port = process.env.PORT || 3000;
 
 
 
-app.get("/",(req,res)=>{
+app.get("/", (req, res) => {
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-   
+
 
     res.render("homepage")
 
 })
 
 
+
+
 app.use(express.static("public"));
 
 
 
-const server = app.listen(port, '0.0.0.0',() => {
+const server = app.listen(port, '0.0.0.0', () => {
     const { address, port } = server.address();
     console.log(`Server running at http://${address}:${port}`);
     console.log(`Server IP address: ${address}`);
-  });
+});

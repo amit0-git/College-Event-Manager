@@ -1,9 +1,9 @@
 const express = require("express")
 const router = express.Router();
 const jwt = require("jsonwebtoken")
-
+const cors = require('cors');
 router.use(express.urlencoded({ extended: true }))
-
+router.use(cors())
 //middleware to parse JSON data
 router.use(express.json());
 
@@ -160,21 +160,62 @@ router.get("*/print", async (req, res) => {
     res.render("pdf", { individualData: student, indiEvents: eventsIndi, teamEvents: eventsTeam });
 
 })
+router.get("/barcode", (req, res) => {
+    res.render("barcode");
+
+
+
+})
+
+router.post("/barcode", (req, res) => {
+    try {
+        console.log(req.body);
+        
+        const jsonData={roll:"12345",name:"Amit",phone:"7505574391"}
+
+        const jsonDataString = JSON.stringify(jsonData);
+        res.redirect(`/register?jsonData=${encodeURIComponent(jsonDataString)}`);
+
+    } catch (error) {
+
+
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
 
 
 router.get("/register", verifyUser, async (req, res) => {
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     const msg = req.query.msg || null;
 
+    let barcodeData=req.query.jsonData||null;
 
-    console.log(msg)
+    if (barcodeData){
+        barcodeData=JSON.parse(req.query.jsonData)
+    }
 
 
-    res.render("register", { username: req.user.username, message: msg, student: null, event: null })
+
+    console.log(barcodeData)
+
+
+    res.render("register", { username: req.user.username, message: msg, student: null, event: null,barcode:barcodeData })
 
 
 })
 
+// router.get("/register", verifyUser, async (req, res, next) => {
+//     try {
+//         const msg = req.query.msg || null;
+//         console.log(msg);
+//         res.render("register", { username: req.user.username, message: msg, student: null, event: null, barcodedata: null });
+//     } catch (error) {
+//         // Handle errors here
+//         next(error); // Pass the error to the error handling middleware
+//     }
+// });
 
 
 
@@ -421,7 +462,7 @@ router.post("/checkTeamName", async (req, res) => {
     try {
 
 
-        if (name1!=="null") {
+        if (name1 !== "null") {
             console
             const team = await Team.findOne({ name: name1 })
 
@@ -438,10 +479,10 @@ router.post("/checkTeamName", async (req, res) => {
         }
 
 
-        else{
+        else {
             res.json({ status: false })
 
-        //if the name is not defined then return false
+            //if the name is not defined then return false
         }
 
 
@@ -1056,7 +1097,7 @@ router.post("/register", verifyUser, async (req, res) => {
     if (existingUser) {
         const msg = "User Already Exists! PID:- " + existingUser['pid']
 
-        res.render("register", { username: req.user.username, message: msg, username: null, student: null, event: null });
+        res.render("register", { username: req.user.username, message: msg, username: null, student: null, event: null,barcode:barcodeData });
     }
 
     else {
@@ -1084,7 +1125,7 @@ router.post("/register", verifyUser, async (req, res) => {
             const student = await getStudentData(rollno);
             console.log(student)
 
-            res.render("register", { username: req.user.username, message: "Successfully Registered!", student: student, event: null });
+            res.render("register", { username: req.user.username, message: "Successfully Registered!", student: student, event: null,barcode:barcodeData });
 
         }).catch((error) => {
             console.log(error);

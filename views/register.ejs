@@ -23,15 +23,15 @@
         <form action="/register" method="post">
 
           <label for="rollno">Roll No/Reg. No</label>
-          <input type="text" name="rollno" id="rollno" required>
+          <input type="text" name="rollno" id="rollno" required value="<%= barcode ? barcode['roll'] : '' %>">
           <br>
 
           <label for="name">Name</label>
-          <input type="text" name="name" id="name" required>
+          <input type="text" name="name" id="name" required value="<%= barcode ? barcode['name'] : '' %>">
           <br>
 
           <label for="phone">Phone</label>
-          <input type="text" name="phone" id="phone" required>
+          <input type="text" name="phone" id="phone" required value="<%= barcode ? barcode['phone'] : '' %>">
           <br>
           <label for="college">College</label>
           <select name="collegeSelect">

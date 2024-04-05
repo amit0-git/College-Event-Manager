@@ -7,48 +7,68 @@ const jwt = require("jsonwebtoken")
 //redirect to login if the token is not verified
 //else move forwrd
 
-async function verifyUser(req, res, next) {
-    //middleware to verify identity of logged in user for protected routes
+// async function verifyUser(req, res, next) {
+//     //middleware to verify identity of logged in user for protected routes
 
-    const token = await req.cookies.jwt;
+//     const token = await req.cookies.jwt;
    
 
 
 
 
-    if (token) {
+//     if (token) {
 
-        //verify the token
-
-
-        await jwt.verify(token, process.env.SECRET_KEY, (err, authData) => {
-            if (err) {
-
-                console.log("Token Verify Error!")
-                res.redirect(302, "/login")
+//         //verify the token
 
 
+//         await jwt.verify(token, process.env.SECRET_KEY, (err, authData) => {
+//             if (err) {
 
-            }
+//                 console.log("Token Verify Error!")
+//                 res.redirect(302, "/login")
 
-            else {
 
-                console.log("Token Verified!")
 
-                req.user = authData
-                console.log(authData)
-                next();
+//             }
 
-            }
-        })
+//             else {
 
-    }
+//                 console.log("Token Verified!")
 
-    //if the token is not present
-    else {
+//                 req.user = authData
+//                 console.log(authData)
+//                 next();
 
-        //next();
-        res.redirect(302, "/login")
+//             }
+//         })
+
+//     }
+
+//     //if the token is not present
+//     else {
+
+//         //next();
+//         res.redirect(302, "/login")
+//     }
+// }
+
+
+async function verifyUser(req, res, next) {
+    try {
+        const token = req.cookies.jwt;
+
+        if (token) {
+            const authData = await jwt.verify(token, process.env.SECRET_KEY);
+            req.user = authData;
+            console.log("Token Verified:", authData);
+            next();
+        } else {
+            console.log("Token not found");
+            res.redirect(302, "/login");
+        }
+    } catch (err) {
+        console.error("Token Verify Error:", err);
+        res.redirect(302, "/login");
     }
 }
 

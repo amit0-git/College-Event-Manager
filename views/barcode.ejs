@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barcode Scanner</title>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+
+</head>
+
+<body>
+
+    <div id="your-barcode-result"></div>
+    <h1>Scan Barcode</h1>
+    <h4>You will be redirected to register page after successfull redirection!</h4>
+    <div id="scanner-container"></div>
+
+    <script>
+        const server = "localhost"
+        const scannerContainer = document.getElementById("scanner-container");
+        const resultContainer = document.getElementById("your-barcode-result");
+
+        let waitTimer;
+
+        async function sendrollno(rollno) {
+            console.log("send roll no called");
+
+            const options = {
+                method: 'POST',
+                redirect: 'follow',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    rollno: rollno
+                }),
+            };
+
+            try {
+                const response = await fetch("http://" + server + ":3000/barcode", options);
+                console.log('POST request successful');
+
+
+
+                if (response.redirected) {
+                    window.location.href = response.url;
+                }
+
+
+
+
+
+            } catch (error) {
+                console.error('Error during POST request:', error);
+                // Handle errors as needed
+                throw error;
+            }
+        }
+
+        function waitFn(func, delay) {
+            clearTimeout(waitTimer);
+            waitTimer = setTimeout(() => {
+                func();
+            }, delay);
+        }
+
+
+        function onDetected(result) {
+
+            //display the result on detecting the barcode 
+
+            resultContainer.innerHTML = `Detected barcode: ${result.codeResult.code}`;
+
+            //wait for some time and send post request to server
+
+            waitFn(() => {
+                sendrollno(result.codeResult.code);
+            }, 1000); // Adjust waitFn delay as needed
+
+        }
+
+
+
+        // Initialize Quagga with configuration
+        Quagga.init({
+            inputStream: {
+                name: "Live",
+                type: "LiveStream",
+                target: scannerContainer
+            },
+            decoder: {
+                readers: ["ean_reader", "code_128_reader", "code_39_reader"] // Add more readers if needed
+            }
+        }, function (err) {
+            if (err) {
+                console.error(err);
+                return;
+            }
+            console.log("Initialization finished. Starting Quagga...");
+            Quagga.start();
+        });
+
+        // Add listener for detection event
+        Quagga.onDetected(onDetected);
+    </script>
+
+</body>
+
+</html>

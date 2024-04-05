@@ -115,6 +115,7 @@
 
 
             <h1 id="head"></h1>
+
             <div id="content">
               <p id="p1"></p>
               <p id="p2"></p>
@@ -790,6 +791,8 @@
         }
 
         //function to save data to teamEvents
+        //check whether maximum events has been registered for PID
+        
         else if (!eventMax) {
           //check whether event is selected
           return error.innerHTML = "Please Select Event!"
@@ -860,18 +863,7 @@
 
       }
 
-      // function createTidRes(result) {
-      //   //function to generate html when we save team events 
-
-      //   let members = result['message']['members'].join(",")
-      //   tidR.innerHTML = "TID: " + result['message']['tid']
-      //   tidMem.innerHTML = "Members: " + members
-      //   evnt.innerHTML = "Event: " + result['message']['event']
-
-
-
-      // }
-
+   
 
 
 
