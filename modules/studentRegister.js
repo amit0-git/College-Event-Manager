@@ -160,8 +160,10 @@ router.get("*/print", async (req, res) => {
     res.render("pdf", { individualData: student, indiEvents: eventsIndi, teamEvents: eventsTeam });
 
 })
-router.get("/barcode", (req, res) => {
-    res.render("barcode");
+
+
+router.get("/barcode", verifyUser, async (req, res) => {
+    res.render("barcode", { username: req.user.username});
 
 
 

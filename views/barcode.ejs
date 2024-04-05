@@ -13,100 +13,149 @@
 
 <body>
 
-    <div id="your-barcode-result"></div>
-    <h1>Scan Barcode</h1>
-    <h4>You will be redirected to register page after successfull redirection!</h4>
-    <div id="scanner-container"></div>
+    <%- include("partials/header"); %>
 
-    <script>
-        const server = "localhost"
-        const scannerContainer = document.getElementById("scanner-container");
-        const resultContainer = document.getElementById("your-barcode-result");
 
-        let waitTimer;
+        <div id="barcode-wrapper">
 
-        async function sendrollno(rollno) {
-            console.log("send roll no called");
+            <div id="your-barcode-result"></div>
+            <h1>Scan Barcode from ID Card</h1>
+            <h3>You will be redirected to register page after successfull redirection!</h3>
+            <p id="barcode-note">
+                Note: Scans only SRMS Institute ID card. (Ensure proper light)
+            </p>
+            <div id="scanner-container"></div>
 
-            const options = {
-                method: 'POST',
-                redirect: 'follow',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    rollno: rollno
-                }),
-            };
-
-            try {
-                const response = await fetch("http://" + server + ":3000/barcode", options);
-                console.log('POST request successful');
+        </div>
 
 
 
-                if (response.redirected) {
-                    window.location.href = response.url;
+        <script>
+            const server = "localhost"
+            const scannerContainer = document.getElementById("scanner-container");
+            const resultContainer = document.getElementById("your-barcode-result");
+
+            let waitTimer;
+
+            async function sendrollno(rollno) {
+                console.log("send roll no called");
+
+                const options = {
+                    method: 'POST',
+                    redirect: 'follow',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        rollno: rollno
+                    }),
+                };
+
+                try {
+                    const response = await fetch("http://" + server + ":3000/barcode", options);
+                    console.log('POST request successful');
+
+
+
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    }
+
+
+
+
+
+                } catch (error) {
+                    console.error('Error during POST request:', error);
+                    // Handle errors as needed
+                    throw error;
                 }
-
-
-
-
-
-            } catch (error) {
-                console.error('Error during POST request:', error);
-                // Handle errors as needed
-                throw error;
             }
-        }
 
-        function waitFn(func, delay) {
-            clearTimeout(waitTimer);
-            waitTimer = setTimeout(() => {
-                func();
-            }, delay);
-        }
-
-
-        function onDetected(result) {
-
-            //display the result on detecting the barcode 
-
-            resultContainer.innerHTML = `Detected barcode: ${result.codeResult.code}`;
-
-            //wait for some time and send post request to server
-
-            waitFn(() => {
-                sendrollno(result.codeResult.code);
-            }, 1000); // Adjust waitFn delay as needed
-
-        }
-
-
-
-        // Initialize Quagga with configuration
-        Quagga.init({
-            inputStream: {
-                name: "Live",
-                type: "LiveStream",
-                target: scannerContainer
-            },
-            decoder: {
-                readers: ["ean_reader", "code_128_reader", "code_39_reader"] // Add more readers if needed
+            function waitFn(func, delay) {
+                clearTimeout(waitTimer);
+                waitTimer = setTimeout(() => {
+                    func();
+                }, delay);
             }
-        }, function (err) {
-            if (err) {
-                console.error(err);
-                return;
+
+
+            function onDetected(result) {
+
+                //display the result on detecting the barcode 
+
+                resultContainer.innerHTML = `Detected barcode: ${result.codeResult.code}`;
+
+                //wait for some time and send post request to server
+
+                waitFn(() => {
+                    sendrollno(result.codeResult.code);
+                }, 1000); // Adjust waitFn delay as needed
+
             }
-            console.log("Initialization finished. Starting Quagga...");
-            Quagga.start();
-        });
 
-        // Add listener for detection event
-        Quagga.onDetected(onDetected);
-    </script>
 
+
+            // Initialize Quagga with configuration
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: scannerContainer
+                },
+                decoder: {
+                    readers: ["ean_reader", "code_128_reader", "code_39_reader"] // Add more readers if needed
+                }
+            }, function (err) {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+                console.log("Initialization finished. Starting Quagga...");
+                Quagga.start();
+            });
+
+            // Add listener for detection event
+            Quagga.onDetected(onDetected);
+        </script>
+
+
+
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            }
+
+            #barcode-note {
+                color: gray;
+            }
+
+            input {
+                width: auto;
+                padding: 7px;
+
+                border-radius: 4px;
+                border: 1px solid #ccc;
+            }
+
+            #barcode-wrapper {
+                margin-left: 30px;
+                width: 100vw;
+            }
+
+            h1 {
+                margin: 0;
+                margin-top: 20px;
+                color: blue;
+            }
+
+            h3 {
+                margin: 0;
+                margin-top: 20px;
+            }
+        </style>
 </body>
 
 </html>
