@@ -11,979 +11,1097 @@
 
   <%- include("partials/header"); %>
 
-  <div id="loading"><img src="/assets/loading.gif" alt="" srcset=""></div>
+    <div id="loading"><img src="/assets/loading.gif" alt="" srcset=""></div>
 
-  <div id="teamWrapper">
 
-    <div id="left">
-      <h1 id="createTeamHead">Create Team</h1>
+    <div id="teamWrapper">
 
-      <div class="form-container">
-        <label for="eventSelect">Team Events</label>
-        <% if (event){ %>
-        <select name="eventSelect" id="eventSelect">
-          <option value="">Select</option>
-          <% for (const i in event){ %>
-          <option value="<%= event[i].event %>"><%= event[i].event %></option>
-          <%}%>
-        </select>
-        <% } %>
+      <div id="left">
+        <h1 id="createTeamHead">Create Team</h1>
+
+        <div class="form-container">
+          <label for="eventSelect">Team Events</label>
+          <% if (event){ %>
+            <select name="eventSelect" id="eventSelect">
+              <option value="">Select</option>
+              <% for (const i in event){ %>
+                <option value="<%= event[i].event %>">
+                  <%= event[i].event %>
+                </option>
+                <%}%>
+            </select>
+            <% } %>
+        </div>
+
+        <div class="form-container">
+          <h1>Add Members</h1>
+          <label for="pidinp">Add Team Name</label>
+          <input type="text" name="teamName" id="teamName" placeholder="Team Name is Optional">
+          <label for="pidinp">Add PID</label>
+          <input type="text" name="pidInp" id="pidinp" required>
+          <button name="btn" id="btn">Add</button>
+        </div>
+
+        <button id="saveTeamBtn">Save Team</button>
+
+        <div id="error"></div>
       </div>
 
-      <div class="form-container">
-        <h1>Add Members</h1>
-        <label for="pidinp">Add Team Name</label>
-        <input type="text" name="teamName" id="teamName" placeholder="Team Name is Optional">
-        <label for="pidinp">Add PID</label>
-        <input type="text" name="pidInp" id="pidinp" required>
-        <button name="btn" id="btn">Add</button>
+      <!-- middle section     -->
+      <div id="middle">
+        <h1>Members</h1>
+        <p id="searchPIDdesc">
+          Added team members are displayed here.
+        </p>
+
+        <table id="pidTable">
+          <tr>
+            <th>PID</th>
+            <th>Name</th>
+            <th>Branch</th>
+
+          </tr>
+
+
+
+        </table>
       </div>
 
-      <button id="saveTeamBtn">Save Team</button>
+      <div id="right">
+        <h1>Search PID/TID</h1>
+        <p id="searchPIDdesc">
+          Display teams with PID or TID and delete teams.
+        </p>
 
-      <div id="error"></div>
-    </div>
+        <form action="/searchPIDtid" method="POST">
+          <input type="text" name="pid" placeholder="Search PID or TID" required id="pid">
 
-    <!-- middle section     -->
-    <div id="middle">
-      <h1>Members</h1>
+          <input type="submit" value="Submit" id="pidSubmit">
+        </form>
 
-      <table id="pidTable">
-        <tr>
-          <th>PID</th>
-          <th>Name</th>
-          <th>Branch</th>
-
-        </tr>
-
-
-
-      </table>
-    </div>
-
-    <div id="right">
-      <h1>Search PID/TID</h1>
-
-      <form action="/searchPIDtid" method="POST">
-        <input type="text" name="pid" placeholder="Search PID or TID" required id="pid">
-
-        <input type="submit" value="Submit" id="pidSubmit">
-      </form>
-
-      <% if (search) {%>
-      <table>
-        <tr>
-          <th>TID</th>
-          <th>Event</th>
-          <th>Members</th>
-          <th>Delete</th>
-        </tr>
+        <% if (search) {%>
+          <table>
+            <tr>
+              <th>TID</th>
+              <th>Event</th>
+              <th>Members</th>
+              <th>Delete</th>
+            </tr>
 
 
-        <% for (const i in search){%>
-        <tr>
-          <td>
-            <%= search[i]['tid']%>
-          </td>
-          <td>
-            <%= search[i]['event']%>
-          </td>
-          <td>
-            <%= search[i]['members']%>
-          </td>
-          <td>
-            <a href="/deleteTeam/<%= search[i]['tid']%>" id="delA">X</a>
+            <% for (const i in search){%>
+              <tr>
+                <td>
+                  <%= search[i]['tid']%>
+                </td>
+                <td>
+                  <%= search[i]['event']%>
+                </td>
+                <td>
+                  <%= search[i]['members']%>
+                </td>
+                <td>
+                  <a href="/deleteTeam/<%= search[i]['tid']%>" id="delA">X</a>
 
-          </td>
-        </tr>
-        <% } %>
+                </td>
+              </tr>
+              <% } %>
 
 
 
-      </table>
-      <% }%>
+          </table>
+          <% }%>
 
 
 
-      <h1 id="head"></h1>
-      <div id="content">
-        <p id="p1"></p>
-        <p id="p2"></p>
-        <p id="p3"></p>
+            <h1 id="head"></h1>
+            <div id="content">
+              <p id="p1"></p>
+              <p id="p2"></p>
+              <p id="p3"></p>
+            </div>
+
+            <a href="" id="teamDel"></a>
+
       </div>
-
-      <a href="" id="teamDel"></a>
-
     </div>
-  </div>
 
 
 
 
 
-  <style>
-    #loading {
-      text-align: center;
-
-      padding: 5px;
-      display: none;
-
-
-
-
-    }
-
-    #loading img {
-      height: 300px;
-      width: 300px;
-      transform: translate(-50%, 50%);
-      position: absolute;
-
-    }
-
-    /* General styles */
-    body {
-      font-family: Arial, sans-serif;
-
-      margin: 0;
-      padding: 0;
-    }
-
-    #createTeamHead {
-      color: blue;
-    }
-
-    #teamWrapper {
-      display: flex;
-      justify-content: space-around;
-      margin-top: 15px;
-
-    }
-
-    #left {
-      background-color: #f4f4f4;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      width: 400px;
-    }
-
-    .form-container {
-      margin-bottom: 20px;
-    }
-
-    .form-container h1 {
-      color: blue;
-    }
-
-    .form-container label {
-      display: block;
-      margin-bottom: 5px;
-      color: #333;
-    }
-
-    .form-container select,
-    .form-container input[type="text"] {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-    }
-
-    .form-container button {
-      padding: 8px 20px;
-      border: none;
-      border-radius: 4px;
-      background-color: #007bff;
-      color: #fff;
-      cursor: pointer;
-    }
-
-    #saveTeamBtn {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 4px;
-      background-color: #28a745;
-      color: #fff;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-
-
-
-
-    /* middle table */
-    #middle {
-      background-color: #f4f4f4;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      width: 350px;
-    }
-
-    #middle h1 {
-      color: rgb(255, 119, 0)
-    }
-
-    #middle th,
-    #right th {
-      background-color: rgb(218, 158, 46);
-
-    }
-
-    #middle td,
-    #right td {
-      font-size: 13px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    th,
-    td {
-      padding: 8px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-      max-width: 200px;
-      /* Adjust as needed */
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-
-    }
-
-    th {
-
-      font-weight: bold;
-      color: white;
-
-    }
-
-    tr {
-      border-radius: 10px;
-    }
-
-    tr:nth-child(odd) {
-      background-color: #fffcc4;
-    }
-
-
-    #right {
-      background-color: #f4f4f4;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      width: 450px;
-      height: 600px;
-    }
-
-    #right h1 {
-      color: red;
-    }
-
-    #Red {
-      color: red;
-    }
-
-    #Green {
-      color: green;
-    }
-
-    input,
-    select {
-      width: auto;
-      padding: 7px;
-
-      border-radius: 4px;
-      border: 1px solid #ccc;
-    }
-
-
-
-    button {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-      background-color: #007bff;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    label {
-      font-weight: bold;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    #error {
-      color: white;
-      font-size: 20px;
-      font-weight: bold;
-      color: red;
-      text-align: center;
-      margin-top: 30px;
-
-
-    }
-
-    #teamDel {
-      text-decoration: none;
-      color: red;
-      font-size: 20px;
-      font-weight: bold;
-
-    }
-
-    #teamDel:hover {
-      display: inline-block;
-      padding: 8px 16px;
-      text-decoration: none;
-      background-color: #ff0000;
-      color: #fff;
-      border-radius: 5px;
-      transition: background-color 0.3s ease;
-    }
-
-    #delA {
-      display: inline-block;
-      padding: 8px 16px;
-      text-decoration: none;
-      background-color: #ff0000;
-      color: #fff;
-      border-radius: 5px;
-      transition: background-color 0.3s ease;
-    }
-
-    #pidSubmit {
-      background-color: blueviolet;
-      color: white;
-      padding: 10px;
-      border: none;
-    }
-
-    #pid {
-      padding: 10px;
-
-    }
-  </style>
-
-
-
-
-
-  <script>
-    //server ip
-
-
-    const server ="172.16.0.187"
-
-    const pids = []
-
-    let eventMax;
-    //team Header
-    const teamH1 = document.getElementById("createTeamHead")
-
-    //add button
-
-    const btn1 = document.getElementById("btn");
-    btn1.addEventListener("click", addData);
-
-    //save Team Btn
-
-    const saveTeam = document.getElementById("saveTeamBtn")
-    saveTeam.addEventListener("click", saveTeamEvent);
-
-    //pid result table
-    const table = document.getElementById("pidTable")
-
-    //team event dropdown
-    const teamDrop = document.getElementById("eventSelect")
-    teamDrop.addEventListener("change", getMax);
-
-
-
-
-    const error = document.getElementById("error");
-
-    //TID Result
-    const tidR = document.getElementById("tid")
-    const tidMem = document.getElementById("tidMembers")
-    const evnt = document.getElementById("event")
-
-    const del = document.getElementById("teamDel")
-
-
-    //loading
-    const loading = document.getElementById('loading');
-
-
-    //disable the add button while loading one request
-
-    async function disableBtn() {
-
-
-      btn.disabled = true
-      btn.style.background = "grey"
-
-    }
-
-    async function enableBtn() {
-
-
-      btn.disabled = false
-      btn.style.background = "#007bff"
-
-    }
-
-    // Function to display loading icon and hide content
-    async function showLoading() {
-      loading.style.display = 'block';
-
-    }
-
-    // Function to hide loading icon and display content
-    async function hideLoading() {
-      loading.style.display = 'none';
-
-    }
-
-    //function to check the condition for participation for different students
-    async function checkParticipationCondition(pid) {
-
-      const options = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-
-          pid: pid
-        }),
-      };
-
-
-
-      try {
-
-
-        const response = await fetch("http://" + server + ":3000/checkTeamCondition", options);
-        const result = await response.json();
-
-        return result;
-
-      } catch (error) {
-        console.error('Error during POST request:', error);
+    <style>
+      :root {
+        --width: 330px;
 
       }
 
+      #loading {
+        text-align: center;
 
-    }
-
-    async function clearGenerateHTMLForTID() {
-      del.innerHTML = ""
-      error.innerHTML = ""
-      head.innerHTML = ""
-      p1.innerHTML = ""
-      p2.innerHTML = ""
-      p3.innerHTML = ""
-
-    }
-    //function to check whether pid is added in the same team event
-
-    async function generateHTMLForTID(data, saveData) {
-
-      const head = document.getElementById("head")
-      const p1 = document.getElementById("p1")
-      const p2 = document.getElementById("p2")
-      const p3 = document.getElementById("p3")
-
-      if (data) {
-        const members = data['members'].join(" ,")
-
-
-
-        del.innerHTML = "Delete"
-        del.href = "deleteTeam/" + data['tid']
-
-        head.innerHTML = "Team Alredy Exists!"
-        p1.innerHTML = "<b>TID</b>: " + data['tid']
-        p2.innerHTML = "<b>Event</b>: " + data['event']
-        p3.innerHTML = "<b>Members</b>: " + members
-      }
-
-
-      if (saveData) {
-
-
-        const members = saveData['message']['members'].join(",")
-
-
-
-        del.innerHTML = "Delete"
-        del.href = "deleteTeam/" + saveData['message']['tid']
-
-        head.innerHTML = "Team Registered Successfully!"
-        p1.innerHTML = "<b>TID</b>: " + saveData['message']['tid']
-        p2.innerHTML = "<b>Event</b>: " + saveData['message']['event']
-
-        p3.innerHTML = "<b>Members</b>: " + members
+        padding: 5px;
+        display: none;
 
 
 
 
       }
 
+      #loading img {
+        height: 300px;
+        width: 300px;
+        transform: translate(-50%, 50%);
+        position: absolute;
+
+      }
+
+      /* General styles */
+      body {
+        font-family: Arial, sans-serif;
+
+        margin: 0;
+        padding: 0;
+      }
+
+      #createTeamHead {
+        color: blue;
+      }
+
+      #teamWrapper {
+        display: grid;
+        justify-content: space-around;
+        grid-template-columns: repeat(3, max-content);
+        margin-top: 15px;
+
+      }
+
+      #left {
+        background-color: #f4f4f4;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 400px;
+      }
+
+      .form-container {
+        margin-bottom: 20px;
+      }
+
+      .form-container h1 {
+        color: blue;
+      }
+
+      .form-container label {
+        display: block;
+        margin-bottom: 5px;
+        color: #333;
+      }
+
+      .form-container select,
+      .form-container input[type="text"] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+      }
+
+      .form-container button {
+        padding: 8px 20px;
+        border: none;
+        border-radius: 4px;
+        background-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+      }
+
+      #saveTeamBtn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        background-color: #28a745;
+        color: #fff;
+        cursor: pointer;
+        margin-top: 20px;
+      }
 
 
 
-    }
 
-    async function isPIDregisteredWithSameEvent(pid) {
-      const event = teamDrop.value
+      /* middle table */
+      #middle {
+        background-color: #f4f4f4;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 350px;
+      }
+
+      #middle h1 {
+        color: rgb(255, 119, 0)
+      }
+
+      #middle th,
+      #right th {
+        background-color: rgb(218, 158, 46);
+
+      }
+
+      #middle td,
+      #right td {
+        font-size: 13px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      th,
+      td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+        max-width: 200px;
+        /* Adjust as needed */
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+
+      }
+
+      th {
+
+        font-weight: bold;
+        color: white;
+
+      }
+
+      tr {
+        border-radius: 10px;
+      }
+
+      tr:nth-child(odd) {
+        background-color: #fffcc4;
+      }
 
 
-      if (event) {
+      #right {
+        background-color: #f4f4f4;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 450px;
+        height: 600px;
+      }
+      #searchPIDdesc{
+        font-size: 15px;
+        color: gray;
+      }
+
+      #right h1 {
+        color: red;
+      }
+
+      #Red {
+        color: red;
+      }
+
+      #Green {
+        color: green;
+      }
+
+      input,
+      select {
+        width: auto;
+        padding: 7px;
+
+        border-radius: 4px;
+        border: 1px solid #ccc;
+      }
+
+
+
+      button {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      label {
+        font-weight: bold;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      #error {
+        color: white;
+        font-size: 20px;
+        font-weight: bold;
+        color: red;
+        text-align: center;
+        margin-top: 30px;
+
+
+      }
+
+      #teamDel {
+        text-decoration: none;
+        color: red;
+        font-size: 20px;
+        font-weight: bold;
+
+      }
+
+      #teamDel:hover {
+        display: inline-block;
+        padding: 8px 16px;
+        text-decoration: none;
+        background-color: #ff0000;
+        color: #fff;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+      }
+
+      #delA {
+        display: inline-block;
+        padding: 8px 16px;
+        text-decoration: none;
+        background-color: #ff0000;
+        color: #fff;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+      }
+
+      #pidSubmit {
+        background-color: blueviolet;
+        color: white;
+        padding: 10px;
+        border: none;
+      }
+
+      #pid {
+        padding: 10px;
+
+      }
+
+
+
+
+
+
+      /* --------------------------------media query section-------------------------------- */
+
+      /* ----------setting media query for mobile--------------- */
+      @media (min-width: 320px) and (max-width: 480px) {
+
+        #teamWrapper {
+          display: grid;
+          justify-content: space-around;
+          grid-template-columns: repeat(1, max-content);
+          margin-top: 15px;
+
+        }
+
+        #left {
+          background-color: #f4f4f4;
+          padding: 20px;
+          border-radius: 8px;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          width: var(--width);
+          border: 1px solid rgb(216, 215, 215);
+        }
+
+        /* middle table */
+        #middle {
+          background-color: #f4f4f4;
+          padding: 20px;
+          border-radius: 8px;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          width: var(--width);
+          border: 1px solid rgb(216, 215, 215);
+          margin-top: 10px;
+          margin-bottom: 10px;
+        }
+
+        #right {
+          background-color: #f4f4f4;
+          padding: 20px;
+          border-radius: 8px;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          width: calc(var(--width));
+          border: 1px solid rgb(216, 215, 215);
+          height: 600px;
+        }
+        #searchPIDdesc{
+        font-size: 12px;
+      }
+
+        table {
+        width: var(--width);
+        
+        border-collapse: collapse;
+        margin-top: 20px;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+
+      th,
+      td {
+        padding: 2px;
+        text-align: left;
+        border: 1px solid #ddd;
+        /* max-width: 200px; */
+        /* Adjust as needed */
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+
+      }
+
+      th {
+
+        font-weight: bold;
+        color: white;
+
+      }
+
+      tr {
+        border-radius: 10px;
+      }
+
+      #delA {
+        display: inline-block;
+        padding: 4px 8px;
+        text-decoration: none;
+        text-align: center;
+        background-color: #ff0000;
+        color: #fff;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+      }
+
+
+      }
+    </style>
+
+
+
+
+
+    <script>
+      //server ip
+
+
+      const server = "localhost"
+
+      const pids = []
+
+      let eventMax;
+      //team Header
+      const teamH1 = document.getElementById("createTeamHead")
+
+      //add button
+
+      const btn1 = document.getElementById("btn");
+      btn1.addEventListener("click", addData);
+
+      //save Team Btn
+
+      const saveTeam = document.getElementById("saveTeamBtn")
+      saveTeam.addEventListener("click", saveTeamEvent);
+
+      //pid result table
+      const table = document.getElementById("pidTable")
+
+      //team event dropdown
+      const teamDrop = document.getElementById("eventSelect")
+      teamDrop.addEventListener("change", getMax);
+
+
+
+
+      const error = document.getElementById("error");
+
+      //TID Result
+      const tidR = document.getElementById("tid")
+      const tidMem = document.getElementById("tidMembers")
+      const evnt = document.getElementById("event")
+
+      const del = document.getElementById("teamDel")
+
+
+      //loading
+      const loading = document.getElementById('loading');
+
+
+      //disable the add button while loading one request
+
+      async function disableBtn() {
+
+
+        btn.disabled = true
+        btn.style.background = "grey"
+
+      }
+
+      async function enableBtn() {
+
+
+        btn.disabled = false
+        btn.style.background = "#007bff"
+
+      }
+
+      // Function to display loading icon and hide content
+      async function showLoading() {
+        loading.style.display = 'block';
+
+      }
+
+      // Function to hide loading icon and display content
+      async function hideLoading() {
+        loading.style.display = 'none';
+
+      }
+
+      //function to check the condition for participation for different students
+      async function checkParticipationCondition(pid) {
+
         const options = {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            event: event,
-            pid: pid,
+
+            pid: pid
           }),
         };
+
+
 
         try {
 
 
-          const response = await fetch("http://" + server + ":3000/checkPidTeam", options);
+          const response = await fetch("http://" + server + ":3000/checkTeamCondition", options);
           const result = await response.json();
 
-          if (result) {
-            //if it returns the result 
+          return result;
 
-            return result;
-          }
         } catch (error) {
           console.error('Error during POST request:', error);
 
         }
-      } else {
-        // Handle the case when event is not defined
-        return false;
-      }
-    }
 
 
-
-
-    async function checkTeamName() {
-      //get team name 
-
-
-      let team = document.getElementById("teamName").value
-      console.log("Check Team Name Called",team)
-
-      if (!team){
-       team="null"
       }
 
-      else{
-        //trim extra space
-        team=team.trim()
-        team = team.toUpperCase()
-        
+      async function clearGenerateHTMLForTID() {
+        del.innerHTML = ""
+        error.innerHTML = ""
+        head.innerHTML = ""
+        p1.innerHTML = ""
+        p2.innerHTML = ""
+        p3.innerHTML = ""
+
       }
-      
+      //function to check whether pid is added in the same team event
+
+      async function generateHTMLForTID(data, saveData) {
+
+        const head = document.getElementById("head")
+        const p1 = document.getElementById("p1")
+        const p2 = document.getElementById("p2")
+        const p3 = document.getElementById("p3")
+
+        if (data) {
+          const members = data['members'].join(" ,")
 
 
-      try {
+
+          del.innerHTML = "Delete"
+          del.href = "deleteTeam/" + data['tid']
+
+          head.innerHTML = "Team Alredy Exists!"
+          p1.innerHTML = "<b>TID</b>: " + data['tid']
+          p2.innerHTML = "<b>Event</b>: " + data['event']
+          p3.innerHTML = "<b>Members</b>: " + members
+        }
 
 
-        if (team) {
+        if (saveData) {
+
+
+          const members = saveData['message']['members'].join(",")
+
+
+
+          del.innerHTML = "Delete"
+          del.href = "deleteTeam/" + saveData['message']['tid']
+
+          head.innerHTML = "Team Registered Successfully!"
+          p1.innerHTML = "<b>TID</b>: " + saveData['message']['tid']
+          p2.innerHTML = "<b>Event</b>: " + saveData['message']['event']
+
+          p3.innerHTML = "<b>Members</b>: " + members
+
+
+
+
+        }
+
+
+
+
+      }
+
+      async function isPIDregisteredWithSameEvent(pid) {
+        const event = teamDrop.value
+
+
+        if (event) {
           const options = {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              name: team,
-
+              event: event,
+              pid: pid,
             }),
           };
 
-          //send the request
-          const response = await fetch("http://" + server + ":3000/checkTeamName", options);
-          const result = await response.json();
+          try {
 
 
-          //return the response
-          return result;
-          
+            const response = await fetch("http://" + server + ":3000/checkPidTeam", options);
+            const result = await response.json();
+
+            if (result) {
+              //if it returns the result 
+
+              return result;
+            }
+          } catch (error) {
+            console.error('Error during POST request:', error);
+
+          }
+        } else {
+          // Handle the case when event is not defined
+          return false;
+        }
+      }
 
 
 
-          console.log(result)
 
-          //if end
+      async function checkTeamName() {
+        //get team name 
+
+
+        let team = document.getElementById("teamName").value
+        console.log("Check Team Name Called", team)
+
+        if (!team) {
+          team = "null"
+        }
+
+        else {
+          //trim extra space
+          team = team.trim()
+          team = team.toUpperCase()
+
         }
 
 
-      } catch (error) {
-        console.log(error)
-      }
-
-
-
-
-    }
-
-
-
-    async function saveTeamEvent() {
-      //get team event name
-      let teamName = document.getElementById("teamName").value
-
-      //trim extra space
-
-      teamName=teamName.trim()
-
-      console.log(pids)
-
-      const teamStatus = await checkTeamName();
-
-      //function to chek the team name status
-      //if not 
-      console.log("team:", teamStatus)
-
-      if (teamStatus['status'] === true) {
-        return error.innerHTML = "Team Name Already Exists!"
-      }
-
-      //function to save data to teamEvents
-      else if (!eventMax) {
-        //check whether event is selected
-        return error.innerHTML = "Please Select Event!"
-      } else if (pids.length === 0) {
-        return error.innerHTML = "Please add PID!"
-      }
-
-
-
-      //if the above conditions are checked
-      else {
-
-
-
-
-
-        console.log("save Team", pids)
-
-        const data = pids
-        const options = {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-
-          },
-          body: JSON.stringify({
-            event: teamDrop.value,
-            name: teamName,
-            data: data
-          })
-        };
 
         try {
 
-          const send = await fetch("http://" + server + ":3000/saveTeam", options).then(response => response.json())
-            .then(async result => {
 
-              //after saving the team clear the array
-              pids.length = 0
+          if (team) {
+            const options = {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                name: team,
 
-              await clearHTML();
+              }),
+            };
 
-              //display the TID of the team after saving the team
-
-
-              await generateHTMLForTID(null, result)
-
-              //tidR.innerHTML=result['message']['tid']
-              error.innerHTML = "Team Successfully Saved!"
-              console.log('POST request successful:', result);
+            //send the request
+            const response = await fetch("http://" + server + ":3000/checkTeamName", options);
+            const result = await response.json();
 
 
+            //return the response
+            return result;
 
-            })
-            .catch(error => {
-              console.error('Error during POST request:', error);
-            });
+
+
+
+            console.log(result)
+
+            //if end
+          }
+
 
         } catch (error) {
           console.log(error)
         }
 
 
+
+
+      }
+
+
+
+      async function saveTeamEvent() {
+        //get team event name
+        let teamName = document.getElementById("teamName").value
+
+        //trim extra space
+
+        teamName = teamName.trim()
+
+        console.log(pids)
+
+        const teamStatus = await checkTeamName();
+
+        //function to chek the team name status
+        //if not 
+        console.log("team:", teamStatus)
+
+        if (teamStatus['status'] === true) {
+          return error.innerHTML = "Team Name Already Exists!"
+        }
+
+        //function to save data to teamEvents
+        else if (!eventMax) {
+          //check whether event is selected
+          return error.innerHTML = "Please Select Event!"
+        } else if (pids.length === 0) {
+          return error.innerHTML = "Please add PID!"
+        }
+
+
+
+        //if the above conditions are checked
+        else {
+
+
+
+
+
+          console.log("save Team", pids)
+
+          const data = pids
+          const options = {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+
+            },
+            body: JSON.stringify({
+              event: teamDrop.value,
+              name: teamName,
+              data: data
+            })
+          };
+
+          try {
+
+            const send = await fetch("http://" + server + ":3000/saveTeam", options).then(response => response.json())
+              .then(async result => {
+
+                //after saving the team clear the array
+                pids.length = 0
+
+                await clearHTML();
+
+                //display the TID of the team after saving the team
+
+
+                await generateHTMLForTID(null, result)
+
+                //tidR.innerHTML=result['message']['tid']
+                error.innerHTML = "Team Successfully Saved!"
+                console.log('POST request successful:', result);
+
+
+
+              })
+              .catch(error => {
+                console.error('Error during POST request:', error);
+              });
+
+          } catch (error) {
+            console.log(error)
+          }
+
+
+        }
+
+
+
+
+      }
+
+      // function createTidRes(result) {
+      //   //function to generate html when we save team events 
+
+      //   let members = result['message']['members'].join(",")
+      //   tidR.innerHTML = "TID: " + result['message']['tid']
+      //   tidMem.innerHTML = "Members: " + members
+      //   evnt.innerHTML = "Event: " + result['message']['event']
+
+
+
+      // }
+
+
+
+
+      async function getMax() {
+
+        await clearHTML();
+
+
+        const val = teamDrop.value
+
+        console.log("Fn called", val)
+
+        if (val) {
+          teamH1.innerHTML = "Create Team: " + val
+          try {
+            // Make a GET request to a URL
+            const response = await fetch('http://' + server + ':3000/getMax/' + val);
+
+            // Check if the request was successful (status code 200)
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+
+            // Parse the response JSON
+            const data = await response.json();
+            console.log("get max:", data)
+            eventMax = data
+
+
+          } catch (error) {
+            console.error('Fetch error:', error);
+
+          }
+
+        } else {
+          eventMax = 0
+          teamH1.innerHTML = "Create Team"
+        }
+
+      }
+
+
+
+      //function to add PID in the table 
+      async function addData() {
+
+        await showLoading();
+
+        await disableBtn();
+
+
+
+
+        try {
+
+          //clear the previous TID exists data
+          await clearGenerateHTMLForTID()
+
+
+
+
+          let pid = document.getElementById("pidinp").value.toUpperCase()
+
+          const pidArrayCheck = await pids.includes(pid) //check whether array contains same pid
+
+          //check whether pid is registered with same event
+          const pidExists = await isPIDregisteredWithSameEvent(pid);
+
+
+          //fetch details of the PID
+          const data = await fetchData(pid)
+
+          if (pidArrayCheck) {
+            //if we are trying to add same PID
+            console.log("pid array check:", pidArrayCheck)
+            console.log("pids:", pids)
+            await enableBtn();
+            await hideLoading()
+            return error.innerHTML = "PID already added!"
+
+          } else if (!eventMax) {
+            console.log("Evnt mx:", eventMax)
+            //check whether event is selected
+
+            await hideLoading()
+            await enableBtn();
+            return error.innerHTML = "Please Select Event!"
+          } else if (!pid) {
+            //if the pid input is empty
+            await hideLoading()
+            await enableBtn()
+            return error.innerHTML = "Please Enter PID!"
+          }
+
+          //check whether you are not adding same pid to team event
+
+
+
+          //check whether the team limit exceeded
+          else if (await pids.length >= await eventMax['data']) {
+            await hideLoading()
+            await enableBtn();
+            return error.innerHTML = "Event Limit Exceeded!"
+          } else if (data['student'] === "Not Found") {
+            //if the server return not found
+            await hideLoading()
+            await enableBtn();
+            return error.innerHTML = "NO PID Found!"
+          } else if (pidExists['status']) {
+            //if the PID is registered with same event
+            await hideLoading()
+            await enableBtn();
+            await generateHTMLForTID(pidExists['data'], null)
+            console.log("pid exists", pidExists['data'])
+            return error.innerHTML = "PID already In the team!"
+
+
+
+
+          } else {
+            //if the PID is not registered same event
+
+            //check the roles of student for participation
+            const studentRoleVerify = await checkParticipationCondition(pid);
+
+            console.log("role verify", studentRoleVerify)
+
+            if (studentRoleVerify['status']) {
+              //if the role is verified and user is allowed to participate
+
+              await pids.push(pid)
+              //wait for the pid to enter in the database
+              await createHTML(data)
+
+
+            } else {
+              //if the role is not verified and PID not registered with the  event
+              await hideLoading()
+              await enableBtn();
+              console.log(pidExists['data'])
+
+
+              return error.innerHTML = studentRoleVerify['data']
+            }
+            await hideLoading()
+            await enableBtn();
+
+          }
+
+
+
+
+        } catch (error) {
+          await hideLoading()
+          await enableBtn();
+          console.log("Add Data Error: ", error)
+        }
+
+
+
       }
 
 
 
 
-    }
+      async function createHTML(data) {
+        //function to create dynamic HTML
 
-    // function createTidRes(result) {
-    //   //function to generate html when we save team events 
+        const tr = document.createElement('tr');
 
-    //   let members = result['message']['members'].join(",")
-    //   tidR.innerHTML = "TID: " + result['message']['tid']
-    //   tidMem.innerHTML = "Members: " + members
-    //   evnt.innerHTML = "Event: " + result['message']['event']
+        const td1 = document.createElement('td');
+        const td2 = document.createElement('td');
+        const td3 = document.createElement('td');
+
+        td1.textContent = data['student']['pid']
+        td2.textContent = data['student']['name']
+        td3.textContent = data['student']['branch']
+
+        tr.appendChild(td1);
+        tr.appendChild(td2);
+        tr.appendChild(td3);
+
+        table.appendChild(tr);
+      }
+
+      async function clearHTML() {
+
+        //clear html table and pids array to 0
+        pids.length = 0
 
 
+        // Get all rows in the table
+        const rows = table.getElementsByTagName("tr");
+        for (let i = 0; i < rows.length; i++) {
+          const cells = rows[i].getElementsByTagName("td");
 
-    // }
+          // Loop through each td element in the row and remove it
+          for (let j = cells.length - 1; j >= 0; j--) {
+            rows[i].removeChild(cells[j]);
+          }
+        }
 
 
+      }
+
+      async function fetchData(pid) {
+        //function to fetch data of the pid
 
 
-    async function getMax() {
-
-      await clearHTML();
-
-
-      const val = teamDrop.value
-
-      console.log("Fn called", val)
-
-      if (val) {
-        teamH1.innerHTML = "Create Team: " + val
         try {
           // Make a GET request to a URL
-          const response = await fetch('http://' + server + ':3000/getMax/' + val);
+          const response = await fetch('http://' + server + ':3000/pid/' + pid);
 
           // Check if the request was successful (status code 200)
           if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
           }
 
-
           // Parse the response JSON
           const data = await response.json();
-          console.log("get max:", data)
-          eventMax = data
 
+          return data
 
         } catch (error) {
           console.error('Fetch error:', error);
 
         }
-
-      } else {
-        eventMax = 0
-        teamH1.innerHTML = "Create Team"
       }
-
-    }
-
-
-
-    //function to add PID in the table 
-    async function addData() {
-
-      await showLoading();
-
-      await disableBtn();
-
-
-
-
-      try {
-
-        //clear the previous TID exists data
-        await clearGenerateHTMLForTID()
-
-
-
-
-        let pid = document.getElementById("pidinp").value.toUpperCase()
-
-        const pidArrayCheck = await pids.includes(pid) //check whether array contains same pid
-
-        //check whether pid is registered with same event
-        const pidExists = await isPIDregisteredWithSameEvent(pid);
-
-
-        //fetch details of the PID
-        const data = await fetchData(pid)
-
-        if (pidArrayCheck) {
-          //if we are trying to add same PID
-          console.log("pid array check:", pidArrayCheck)
-          console.log("pids:", pids)
-          await enableBtn();
-          await hideLoading()
-          return error.innerHTML = "PID already added!"
-
-        } else if (!eventMax) {
-          console.log("Evnt mx:", eventMax)
-          //check whether event is selected
-
-          await hideLoading()
-          await enableBtn();
-          return error.innerHTML = "Please Select Event!"
-        } else if (!pid) {
-          //if the pid input is empty
-          await hideLoading()
-          await enableBtn()
-          return error.innerHTML = "Please Enter PID!"
-        }
-
-        //check whether you are not adding same pid to team event
-
-
-
-        //check whether the team limit exceeded
-        else if (await pids.length >= await eventMax['data']) {
-          await hideLoading()
-          await enableBtn();
-          return error.innerHTML = "Event Limit Exceeded!"
-        } else if (data['student'] === "Not Found") {
-          //if the server return not found
-          await hideLoading()
-          await enableBtn();
-          return error.innerHTML = "NO PID Found!"
-        } else if (pidExists['status']) {
-          //if the PID is registered with same event
-          await hideLoading()
-          await enableBtn();
-          await generateHTMLForTID(pidExists['data'], null)
-          console.log("pid exists", pidExists['data'])
-          return error.innerHTML = "PID already In the team!"
-
-
-
-
-        } else {
-          //if the PID is not registered same event
-
-          //check the roles of student for participation
-          const studentRoleVerify = await checkParticipationCondition(pid);
-
-          console.log("role verify", studentRoleVerify)
-
-          if (studentRoleVerify['status']) {
-            //if the role is verified and user is allowed to participate
-
-            await pids.push(pid)
-            //wait for the pid to enter in the database
-            await createHTML(data)
-
-
-          } else {
-            //if the role is not verified and PID not registered with the  event
-            await hideLoading()
-            await enableBtn();
-            console.log(pidExists['data'])
-
-
-            return error.innerHTML = studentRoleVerify['data']
-          }
-          await hideLoading()
-          await enableBtn();
-
-        }
-
-
-
-
-      } catch (error) {
-        await hideLoading()
-        await enableBtn();
-        console.log("Add Data Error: ", error)
-      }
-
-
-
-    }
-
-
-
-
-    async function createHTML(data) {
-      //function to create dynamic HTML
-
-      const tr = document.createElement('tr');
-
-      const td1 = document.createElement('td');
-      const td2 = document.createElement('td');
-      const td3 = document.createElement('td');
-
-      td1.textContent = data['student']['pid']
-      td2.textContent = data['student']['name']
-      td3.textContent = data['student']['branch']
-
-      tr.appendChild(td1);
-      tr.appendChild(td2);
-      tr.appendChild(td3);
-
-      table.appendChild(tr);
-    }
-
-    async function clearHTML() {
-
-      //clear html table and pids array to 0
-      pids.length = 0
-
-
-      // Get all rows in the table
-      const rows = table.getElementsByTagName("tr");
-      for (let i = 0; i < rows.length; i++) {
-        const cells = rows[i].getElementsByTagName("td");
-
-        // Loop through each td element in the row and remove it
-        for (let j = cells.length - 1; j >= 0; j--) {
-          rows[i].removeChild(cells[j]);
-        }
-      }
-
-
-    }
-
-    async function fetchData(pid) {
-      //function to fetch data of the pid
-
-
-      try {
-        // Make a GET request to a URL
-        const response = await fetch('http://' + server + ':3000/pid/' + pid);
-
-        // Check if the request was successful (status code 200)
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        // Parse the response JSON
-        const data = await response.json();
-
-        return data
-
-      } catch (error) {
-        console.error('Fetch error:', error);
-
-      }
-    }
-  </script>
+    </script>
 
 </body>
 

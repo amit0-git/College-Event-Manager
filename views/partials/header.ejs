@@ -1,71 +1,158 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-<div class="navbar">
-  <% if (username) { %>
-  <a href="#home" id="user1"><%= username %></a>
-  <% } %>
-  <a href="/"><i class="fas fa-home"></i> Home</a>
-  <a href="/register"><i class="fas fa-id-card"></i> PID</a>
-  <a href="/tid"><i class="fas fa-id-badge"></i> TID</a>
-
-  <a href="/jcLogin"><i class="fas fa-users-cog"></i> JC Panel</a>
-  <a href="/admin"><i class="fas fa-user-cog"></i> Admin</a>
-  <% if (username) { %>
-  <a href="/logout"><i class="fas fa-sign-out-alt"></i> Log Out</a>
-  <% } %>
-
-
-  <form action="print" method="get" id="print">
-    <input type="text" name="pid" placeholder="Print PID">
-  </form>
 
 
 
-</div>
 
 
+
+
+
+<header>
+  <nav class="nav">
+    <a href="/" class="logo"> <% if (username) { %>
+      <span> <%= username %></span>
+      <% } else{ %>
+      <span style="color: rgb(249, 42, 42); backdrop-filter: blur(5px)">SRMS</span>
+
+      <% } %>
+
+    </a>
+
+    <div class="hamburger">
+      <span class="line"></span>
+      <span class="line"></span>
+      <span class="line"></span>
+    </div>
+
+    <div class="nav__link hide">
+      <a href="/">Home</a>
+      <a href="/register">PID</a>
+      <a href="/tid">TID</a>
+      <a href="jcLogin">JC Panel</a>
+      <a href="/admin">Admin</a>
+      <% if (username) { %>
+      <a href="/logout">Log Out</a>
+      <% } %>
+
+      <form action="print" method="get" id="print">
+        <input type="text" name="pid" placeholder="Print PID">
+      </form>
+
+    </div>
+  </nav>
+</header>
 
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Dancing+Script&family=Fredericka+the+Great&family=Poppins&display=swap');
 
-  #print {
-    padding: 10px;
-  }
-
-  #user1 {
-    background-color: rgb(255, 166, 0);
-  }
-
-  .navbar {
-    background-color: rgb(137, 2, 255);
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
-
-    border-radius: 10px;
-    font-family: 'Poppins', sans-serif;
-    display: flex;
-  }
 
 
-  .navbar a {
 
-
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
+  a {
     text-decoration: none;
+    color: black;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-transform: uppercase;
   }
 
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 5px;
+    background-color: rgb(66, 153, 245);
+  }
 
-  /* On hover, add a background color */
-  .navbar a:hover {
-    background-color: #ddd;
+  .logo {
+    font-size: 1.8rem;
+    color: rgb(255, 255, 255);
+    padding-left: 20px;
+  }
+
+  .hamburger {
+    padding-right: 20px;
+    padding-top: 5px;
+    cursor: pointer;
+  }
+
+  .hamburger .line {
+    display: block;
+    width: 30px;
+    height: 4px;
+    margin-bottom: 10px;
+    background-color: rgb(255, 255, 255);
+  }
+
+  .nav__link {
+    position: fixed;
+    width: 90%;
+    top: 3.3rem;
+    left: 18px;
+    background-color: lightblue;
+  }
+
+  .nav__link a {
+    display: block;
+    text-align: center;
+    padding: 10px 0;
+  }
+  #print{
+      display: block;
+      width: 80%;
+      margin: 0 auto;
+      padding-bottom: 5px;
+     
+    }
+
+  .nav__link a:hover {
+    background-color: rgb(175, 175, 175);
     color: black;
   }
 
-  .navbar form {
-    display: flex;
-    flex-direction: row;
+  .hide {
+    display: none;
+  }
 
-    gap: 20px;
+  @media screen and (min-width: 600px) {
+    .nav {
+      background: rgb(77, 66, 228);
+
+    }
+
+    .nav__link {
+      display: block;
+      position: static;
+      width: auto;
+      margin-right: 20px;
+      background: none;
+    }
+
+    .nav__link a {
+      display: inline-block;
+      padding: 15px 15px;
+      color: white;
+      /* font-family: 'Poppins', sans-serif; */
+    }
+    #print{
+      display: inline-block;
+      width: auto;
+     
+    }
+
+    .hamburger {
+      display: none;
+    }
   }
 </style>
+
+
+<script>
+  const hamburger = document.querySelector('.hamburger');
+  const navLink = document.querySelector('.nav__link');
+
+  hamburger.addEventListener('click', () => {
+    navLink.classList.toggle('hide');
+  });
+</script>

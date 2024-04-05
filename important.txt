@@ -1,2 +1,9 @@
 Update Server Ip in fetch requests
 setup mongodb connection
+
+
+
+
+1.trusted ips
+2. register from mobile and verify using system
+3. add phone number search

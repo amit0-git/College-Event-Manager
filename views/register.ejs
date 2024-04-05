@@ -15,146 +15,172 @@
 
 
 
-  <div id="wrapper">
+    <div id="wrapper">
 
-    <div id="left">
-      <h1>User Registration</h1>
+      <div id="left">
+        <h1>User Registration</h1>
 
-      <form action="/register" method="post">
+        <form action="/register" method="post">
 
-        <label for="rollno">Roll No/Reg. No</label>
-        <input type="text" name="rollno" id="rollno" required>
-        <br>
+          <label for="rollno">Roll No/Reg. No</label>
+          <input type="text" name="rollno" id="rollno" required>
+          <br>
 
-        <label for="name">Name</label>
-        <input type="text" name="name" id="name"  required>
-        <br>
+          <label for="name">Name</label>
+          <input type="text" name="name" id="name" required>
+          <br>
 
-        <label for="phone">Phone</label>
-        <input type="text" name="phone" id="phone" required>
-        <br>
-        <label for="college">College</label>
-        <select name="collegeSelect">
-          <option value="SRMS CET">SRMS CET</option>
-          <option value="SRMS CETR">SRMS CETR</option>
-          <option value="SRMS IBS">SRMS IBS</option>
-         
-          <option value="SRMS IMS">SRMS IMS</option>
-          <option value="SRMS Law">SRMS Law</option>
-          <option value="SRMS Nursing">SRMS Nursing</option>
-          <option value="SRMS Unnao">SRMS Unnao</option>
-          <option value="SRMS IPS">SRMS IPS</option>
-          <option value="Other">Other</option>
+          <label for="phone">Phone</label>
+          <input type="text" name="phone" id="phone" required>
+          <br>
+          <label for="college">College</label>
+          <select name="collegeSelect">
+            <option value="SRMS CET">SRMS CET</option>
+            <option value="SRMS CETR">SRMS CETR</option>
+            <option value="SRMS IBS">SRMS IBS</option>
 
-        </select><br>
+            <option value="SRMS IMS">SRMS IMS</option>
+            <option value="SRMS Law">SRMS Law</option>
+            <option value="SRMS Nursing">SRMS Nursing</option>
+            <option value="SRMS Unnao">SRMS Unnao</option>
+            <option value="SRMS IPS">SRMS IPS</option>
+            <option value="Other">Other</option>
 
-        <label for="branch">Branch</label>
-        <select name="branchSelect">
-          <option value="CSE">CSE</option>
-          <option value="IT">IT</option>
-          <option value="EN">EN</option>
-          <option value="EC">EC</option>
-          <option value="ME">ME</option>
-          <option value="B Pharma">B Pharma</option>
-          <option value="MBA">MBA</option>
-          <option value="MCA">MCA</option>
-    
-          <option value="Medical">Medical</option>
-          
-          <option value="Other">Other</option>
-        </select>
+          </select><br>
 
+          <label for="branch">Branch</label>
+          <select name="branchSelect">
+            <option value="CSE">CSE</option>
+            <option value="IT">IT</option>
+            <option value="EN">EN</option>
+            <option value="EC">EC</option>
+            <option value="ME">ME</option>
+            <option value="B Pharma">B Pharma</option>
+            <option value="MBA">MBA</option>
+            <option value="MCA">MCA</option>
 
+            <option value="Medical">Medical</option>
 
-        <label for="year">Year</label>
-        <select name="yearSelect">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-
-        </select>
-
-
-        <br>
-        <button type="submit">Register</button>
-      </form>
+            <option value="Other">Other</option>
+          </select>
 
 
 
-    </div>
+          <label for="year">Year</label>
+          <select name="yearSelect">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+
+          </select>
 
 
-
-    <div id="rightCombine">
-      <!-- Right section  -->
-
-
-      <div id="right">
-        <h1>Search PID / Roll No</h1>
-
-        <form action="/pid" method="POST">
-          <input type="text" name="pid" placeholder="Search PID to delete user or update event" required>
-          <input type="submit" value="Submit" id="pidSubmit">
+          <br>
+          <button type="submit">Register</button>
         </form>
 
 
-        <div id="studentSection">
 
-          <% if (student){ %>
-
-          <h2>Student Information:</h2>
-          <ul>
-
-            <li><span id="liHead"><b>PID</b></span> :&nbsp<strong><%= student.pid %></strong></li>
-            <li><span id="liHead"><b>Roll No</b></span>:&nbsp<%= student.rollno %></li>
-            <li><span id="liHead"><b>Name</b></span>:&nbsp<%= student.name %></li>
-            <li><span id="liHead"><b>Phone</b></span>:&nbsp<%= student.phone %></li>
-            <li><span id="liHead"><b>College</b></span>:&nbsp <%= student.college %></li>
-            <li><span id="liHead"><b>Branch</b></span>:&nbsp<%= student.branch %></li>
-          </ul>
-
-          <div id="buttonA">
-            <a href="/deletePID/<%= student.pid %>" id="delA">Delete</a>
-
-          </div>
-
-
-          <%}%>
-  </div>
-</div>
+      </div>
 
 
 
-<div id="eventSection">
-<h1>Add Events</h1>
+      <div id="rightCombine">
+        <!-- Right section  -->
 
 
+        <div id="right">
+          <h1>Search PID / Roll No</h1>
+          <p id="piddesc">
+            Enter PID, Roll No, Phone to search details
+          </p>
 
-
-<!-- add update event form -->
-
-<% if (event && student) { %>
-          <h2>Already Participated In</h2>
-
-          <form action="/updateEvent/<%= student.pid %>" method="POST">
-            <div class="checkbox-group">
-              
-              <% for (const i in event) { %>
-              <label class="checkbox-label">
-                <input type="checkbox" class="styled-checkbox" name="events" value="<%= event[i].event %>" <% if (student.singleEvent.includes(event[i].event)){ %> checked <% } %>>
-                <%= event[i].event %>
-              </label><br>
-              <% } %>
-
-            </div>
-            <br>
-            <input type="submit" value="Update" class="submit-button">
+          <form action="/pid" method="POST">
+            <input type="text" name="pid" placeholder="Search PID to delete user or update event" required>
+            <input type="submit" value="Submit" id="pidSubmit">
           </form>
-          <% } %>
+
+
+          <div id="studentSection">
+
+            <% if (student){ %>
+
+              <h2>Student Information:</h2>
+              <ul>
+
+                <li><span id="liHead"><b>PID</b></span> :&nbsp<strong>
+                    <%= student.pid %>
+                  </strong></li>
+                <li><span id="liHead"><b>Roll No</b></span>:&nbsp<%= student.rollno %>
+                </li>
+                <li><span id="liHead"><b>Name</b></span>:&nbsp<%= student.name %>
+                </li>
+                <li><span id="liHead"><b>Phone</b></span>:&nbsp<%= student.phone %>
+                </li>
+                <li><span id="liHead"><b>College</b></span>:&nbsp <%= student.college %>
+                </li>
+                <li><span id="liHead"><b>Branch</b></span>:&nbsp<%= student.branch %>
+                </li>
+              </ul>
+
+              <div id="buttonA">
+                <a href="/deletePID/<%= student.pid %>" id="delA">Delete</a>
+
+              </div>
+
+
+              <%}%>
+          </div>
+        </div>
+
+
+
+        <div id="eventSection">
+
+
+          <h1>Add Events</h1>
+          <p id="piddesc">
+            Events are displayed after searching PID, Roll No or Phone
+          </p>
+          <!-- add update event form -->
+
+          <% if (event && student) { %>
+            <h2>Already Participated In</h2>
+
+            <form action="/updateEvent/<%= student.pid %>" method="POST">
+              <div class="checkbox-group">
+
+                <% for (const i in event) { %>
+                  <!-- Wrap every two checkboxes in a row -->
+                  <% if (i % 2===0) { %>
+                    <div class="row">
+                      <% } %>
+                        <label class="checkbox-label">
+                          <input type="checkbox" class="styled-checkbox" name="events" value="<%= event[i].event %>" <%
+                            if (student.singleEvent.includes(event[i].event)){ %> checked <% } %>>
+                            <span id="checkcontent">
+                              <%= event[i].event %>
+                            </span>
+
+                        </label>
+                        <% if (i % 2===1 || i==event.length - 1) { %>
+                    </div>
+                    <!-- Close the row after the second checkbox or when reaching the last checkbox -->
+                    <% } %>
+                      <% } %>
+
+              </div>
+              <br>
+              <input type="submit" value="Update" class="submit-button">
+            </form>
+            <% } %>
 
         </div>
+
+
+
 
 
       </div>
@@ -162,249 +188,515 @@
     </div>
 
 
+    <!-- <% if (message) {%>
+      <div id="registerInfo" class="error-message">
+        <%= message %>
+      </div>
+      <%}%> -->
+
+
     <% if (message) {%>
-    <div id="registerInfo" class="error-message">
-      <%= message %>
-    </div>
-    <%}%>
+      <div id="popup1" class="overlay">
+        <div class="popup">
 
-<div id="developer">
+          <a class="close" href="#popup1">×</a>
+          <div class="content">
+            <%= message %>
+          </div>
+        </div>
+      </div>
 
-</div>
-
-    <style>
-     
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      }
-
-      /* User Registeration */
-
-      #left {
-
-        padding-right: 20px;
-        padding-left: 20px;
-        background-color: #f9f9f9;
-        border-radius: 5px;
-        margin-top: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        width: 350px;
-        height: 600px;
-      }
-
-      h1 {
-        text-align: center;
-        margin-bottom: 20px;
-        font-size: 28px;
-      }
-
-      #left h1 {
-        color: blue;
-      }
-
-      form {
-        display: flex;
-        flex-direction: column;
-        /* padding: 10px; */
-      }
-
-      label {
-        margin-bottom: 2px;
-        font-weight: bold;
-      }
-
-      input,
-      select {
-        width: auto;
-        padding: 7px;
-
-        border-radius: 4px;
-        border: 1px solid #ccc;
-      }
-
-      button {
-        width: 100%;
-        padding: 10px;
-        border: none;
-        border-radius: 5px;
-        background-color: #007bff;
-        color: white;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-      }
-
-      button:hover {
-        background-color: #0056b3;
-      }
-
-
-
-/*right combine  */
-#rightCombine{
-  display: flex;
-
-  
- 
-}
-      /* right container */
-      #liHead {
-
-        display: inline-block;
-        width: 60px;
-
-      }
-
-      #right {
-        border: .1px solid rgb(227, 212, 212);
-
-       
-       border-bottom-left-radius: 8px;
-       border-top-left-radius: 8px;
-        box-shadow: 0 4px 6px rgba(227, 176, 176, 0.1);
-        background-color: #f9f9f9;
-        margin-top: 10px;
-       
-        padding-right: 20px;
-        padding-left: 20px;
-        width: 350px;
-        height: 600px;
-        
-      }
-
-      #right h1 {
-        color: blue;
-      }
-
-      #pidSubmit {
-        background-color: #007bff;
-        color: white;
-        font-size: 16px;
-      }
-
-      #buttonA {
-
-        margin-bottom: 10px;
-        /* Adjust as needed */
-      }
-
-      #delA {
-        display: inline-block;
-        padding: 8px 16px;
-        text-decoration: none;
-        background-color: #ff0000;
-        color: #fff;
-        border-radius: 5px;
-        transition: background-color 0.3s ease;
-      }
-     
-      #delA:hover {
-        background-color: #b30000;
-      }
-
-      /*  */
-      input[type="checkbox"] {
-        transform: scale(1.5);
-        /* Adjust the scale factor to make it bigger or smaller */
-      }
-
-      #wrapper {
-        display: flex;
-        justify-content: space-around;
-        margin-top: 10px;
-      }
-
-      ul {
-        list-style-type: none;
-        padding: 0;
-      }
-
-      li {
-        margin-bottom: 6px;
-        background-color: #fff;
-        border-radius: 5px;
-        padding: 10px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      }
-
-      li:nth-child(even) {
-        background-color: #f2f2f2;
-      }
-
-
-
-      /* event scetion */
-
-
-      #eventSection {
-        background-color: #f9f9f9;
-       
-        width: 350px;
-        height: 600px;
-        overflow-y: scroll;
-        border-bottom-right-radius: 8px;
-       border-top-right-radius: 8px;
-        margin-top: 10px;
-       
-       padding-right: 20px;
-       padding-left: 20px;
-      }
-
-      #eventSection h1 {
-        color: blue;
-      }
-
-      h2 {
-        margin-left: 10px;
-      }
-
-      /* Additional styles for alignment */
-      .checkbox-group {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-      }
-
-      .checkbox-label {
-        display: flex;
-        align-items: center;
-        font-size: 16px;
-      }
-
-      .styled-checkbox {
-        margin-right: 10px;
-        /* Add any additional styles here */
-      }
-
-      .submit-button {
-        background-color: rgb(5, 251, 5);
-        font-size: 16px;
-        color: white;
-      }
-
-
-      /*     erro messagge  */
-      /* CSS for displaying error message */
-.error-message {
-  max-width: 500px;
-  margin: 20px auto;
-  padding: 15px;
-  background-color: #ef3141; /* Red or any other error color */
-  color: white; /* Text color for error message */
-  border: 1px solid #f5c6cb; /* Border color */
-  border-radius: 5px;
-  text-align: center;
-  font-size: 16px;
-  box-sizing: border-box;
-}
+      <%}%>
 
 
 
 
 
-    </style>
+        <!-- <div id="registerInfo" class="error-message">
+      Record Updated Successfully?
+    </div> -->
+
+        <div id="developer">
+
+        </div>
+
+        <style>
+          :root {
+            --width: 300px;
+
+          }
+
+          body {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+          }
+
+          /* User Registeration */
+
+          #left {
+
+            padding-right: 20px;
+            padding-left: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            margin-top: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            height: 600px;
+          }
+
+          h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 28px;
+          }
+
+          #left h1 {
+            color: blue;
+          }
+
+          form {
+            display: flex;
+            flex-direction: column;
+            /* padding: 10px; */
+          }
+
+          label {
+            margin-bottom: 2px;
+            font-weight: bold;
+          }
+
+          input,
+          select {
+            width: auto;
+            padding: 7px;
+
+            border-radius: 4px;
+            border: 1px solid #ccc;
+          }
+
+          button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+          }
+
+          button:hover {
+            background-color: #0056b3;
+          }
+
+
+
+          /*right combine  */
+          #rightCombine {
+            display: grid;
+            grid-template-columns: repeat(2, max-content);
+
+
+
+          }
+
+          /* right container */
+          #liHead {
+
+            display: inline-block;
+            width: 60px;
+
+          }
+
+          #right {
+            border: .1px solid rgb(227, 212, 212);
+
+
+            border-bottom-left-radius: 8px;
+            border-top-left-radius: 8px;
+            box-shadow: 0 4px 6px rgba(227, 176, 176, 0.1);
+            background-color: #f9f9f9;
+            margin-top: 10px;
+
+            padding-right: 20px;
+            padding-left: 20px;
+            width: 350px;
+            height: 600px;
+
+          }
+
+          #right h1 {
+            color: blue;
+          }
+
+          #pidSubmit {
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+          }
+
+          #buttonA {
+
+            margin-bottom: 10px;
+            /* Adjust as needed */
+          }
+
+          #delA {
+            display: inline-block;
+            padding: 8px 16px;
+            text-decoration: none;
+            background-color: #ff0000;
+            color: #fff;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+          }
+
+          #delA:hover {
+            background-color: #b30000;
+          }
+
+          /*  */
+          input[type="checkbox"] {
+            transform: scale(1.5);
+            /* Adjust the scale factor to make it bigger or smaller */
+          }
+
+          #wrapper {
+            display: grid;
+            grid-template-columns: repeat(2, max-content);
+            justify-content: space-around;
+            margin-top: 10px;
+          }
+
+          ul {
+            list-style-type: none;
+            padding: 0;
+          }
+
+          li {
+            margin-bottom: 6px;
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          }
+
+          li:nth-child(even) {
+            background-color: #f2f2f2;
+          }
+
+
+
+          /* event scetion */
+
+
+          #eventSection {
+            background-color: #f9f9f9;
+
+            width: 350px;
+            height: 600px;
+            overflow-y: scroll;
+            border-bottom-right-radius: 8px;
+            border-top-right-radius: 8px;
+            margin-top: 10px;
+
+            padding-right: 20px;
+            padding-left: 20px;
+          }
+
+          #eventSection h1 {
+            color: blue;
+          }
+
+          h2 {
+            margin-left: 10px;
+          }
+
+
+
+          .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+          }
+
+          .row {
+            display: flex;
+            flex-wrap: wrap;
+
+            /* Adjust as needed */
+          }
+
+          .styled-checkbox {
+            position: absolute;
+            top: 4px;
+
+          }
+
+          .checkbox-label {
+            margin-right: 20px;
+            margin-bottom: 10px;
+            position: relative;
+
+            /* Adjust as needed */
+          }
+
+          #checkcontent {
+            width: 110px;
+            margin-left: 30px;
+            display: inline-block;
+          }
+
+
+
+          .submit-button {
+            background-color: rgb(5, 251, 5);
+            font-size: 16px;
+            color: white;
+          }
+
+
+          /*     erro messagge  */
+          /* CSS for displaying error message */
+
+
+
+
+          /*--------------- error box------------- */
+          .overlay {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            height: 100vh;
+            overflow: hidden;
+
+
+
+
+          }
+
+
+
+          .popup {
+            position: relative;
+            margin: 70px auto;
+            padding: 20px;
+            background: #f11b1b;
+            border-radius: 5px;
+            width: 20rem;
+
+            transition: all 5s ease-in-out;
+          }
+
+          .popup .close {
+            position: absolute;
+            top: 10px;
+            right: 30px;
+            transition: all 200ms;
+            font-size: 30px;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+          }
+
+          .popup .close:hover {
+            color: orange;
+          }
+
+          .popup .content {
+
+            overflow: auto;
+            color: white;
+            font-weight: bold;
+          }
+
+
+
+
+          /* --------------------------------media query section-------------------------------- */
+
+          /* ----------setting media query for mobile--------------- */
+          @media (min-width: 320px) and (max-width: 480px) {
+
+            #wrapper {
+              display: grid;
+              grid-template-columns: repeat(1, max-content);
+              justify-content: center;
+              margin-top: 10px;
+              /* background-color: red; */
+            }
+
+            /* User Registeration */
+
+            #left {
+
+              padding-right: 20px;
+              padding-left: 20px;
+              background-color: #f9f9f9;
+              border-radius: 5px;
+              margin-top: 10px;
+              box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+              width: var(--width);
+              height: 600px;
+            }
+
+            h1 {
+              text-align: center;
+              margin-bottom: 20px;
+              font-size: 28px;
+            }
+
+            #left h1 {
+              color: blue;
+            }
+
+            form {
+              display: flex;
+              flex-direction: column;
+              /* padding: 10px; */
+            }
+
+            label {
+              margin-bottom: 2px;
+              font-weight: bold;
+            }
+
+            input,
+            select {
+              width: auto;
+              padding: 7px;
+
+              border-radius: 4px;
+              border: 1px solid #ccc;
+            }
+
+            button {
+              width: 100%;
+              padding: 10px;
+              border: none;
+              border-radius: 5px;
+              background-color: #007bff;
+              color: white;
+              font-size: 16px;
+              cursor: pointer;
+              transition: background-color 0.3s ease;
+            }
+
+            button:hover {
+              background-color: #0056b3;
+            }
+
+
+
+
+
+
+            /* right section */
+            /*right combine  */
+            #rightCombine {
+              display: grid;
+              grid-template-columns: repeat(1, max-content);
+
+
+
+            }
+
+
+            /* event scetion */
+
+
+            #eventSection {
+              background-color: #f9f9f9;
+
+              width: var(--width);
+              height: 600px;
+              overflow-y: scroll;
+              border-radius: 8px;
+              margin-top: 10px;
+
+              padding-right: 20px;
+              padding-left: 20px;
+            }
+
+
+
+
+            #right {
+              border: .1px solid rgb(227, 212, 212);
+
+
+              border-radius: 8px;
+              box-shadow: 0 4px 6px rgba(227, 176, 176, 0.1);
+              background-color: #f9f9f9;
+              margin-top: 10px;
+
+              padding-right: 20px;
+              padding-left: 20px;
+              width: var(--width);
+              height: 600px;
+
+            }
+
+            .checkbox-group {
+              display: grid;
+              grid-template-columns: repeat(2, auto);
+
+            }
+
+
+
+
+            .styled-checkbox {
+              position: absolute;
+              top: 1px;
+              height: 12px;
+
+            }
+
+            .checkbox-label {
+              margin-right: 20px;
+              margin-bottom: 10px;
+              position: relative;
+
+              /* Adjust as needed */
+            }
+
+            #checkcontent {
+              width: 110px;
+              margin-left: 30px;
+              display: inline-block;
+            }
+
+            #piddesc {
+              color: gray;
+              font-size: 13px;
+            }
+
+
+
+
+
+
+          }
+        </style>
+
+
+        <script>
+
+          const close = document.getElementsByClassName("close")[0];
+          const errorBox = document.getElementById("popup1")
+
+          close.addEventListener("click", closeError);
+
+          function closeError() {
+            errorBox.style.display = "none";
+          }
+        </script>
 
 </body>
 
