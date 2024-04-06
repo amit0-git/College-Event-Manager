@@ -10,3 +10,4 @@ setup mongodb connection
 4. mandatory team name
 5. event close system from jc
 6. update homepage
+7. add dev info
