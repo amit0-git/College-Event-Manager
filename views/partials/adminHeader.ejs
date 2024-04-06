@@ -1,5 +1,5 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
+<!-- fontawesome icon cdn -->
+<script src="https://kit.fontawesome.com/04fd96b6f4.js" crossorigin="anonymous"></script>
 <div class="navbar">
   <% if (username) { %>
     <a href="#" id="user">
@@ -10,6 +10,7 @@
       <a href="/tyro"><i class="fas fa-cogs"></i> Manage Tyro</a>
       <a href="/signup"><i class="fas fa-user-plus"></i> Register Roles</a>
       <a href="/addEvents"><i class="far fa-calendar-alt"></i> Manage Events</a>
+      <a href="/addip"><i class="fa-solid fa-laptop"></i> Allowed IPs</a>
       <% if (username) { %>
         <a href="/logout"><i class="fas fa-sign-out-alt"></i> Log Out</a>
         <% } %>

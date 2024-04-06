@@ -5,7 +5,7 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 
 
-const { Html5Qrcode } = require('html5-qrcode');
+
 
 
 
@@ -19,6 +19,11 @@ const jcRoutes = require("./modules/judgement")
 //USER SCHEMA
 const User = require("./databaseModels/user")
 
+
+//IP SCHEMA
+const IP = require("./databaseModels/ipAddress")
+
+
 require('dotenv').config()
 
 
@@ -29,6 +34,57 @@ mongoose.connect('mongodb://127.0.0.1:27017/users');
 
 app = express()
 
+
+
+
+
+//GET ALL THE IPS
+
+async function GetIPs() {
+
+    try {
+        const ip = await IP.find({})
+
+
+        return ip
+    }
+
+    catch (error) {
+        console.log(error)
+
+    }
+}
+
+
+
+const allowedIPss = GetIPs();
+const allowedIPs = ['127.0.0.1'];
+
+
+allowedIPss.then((data) => {
+    data.forEach((elem) => {
+        allowedIPs.push(elem['ip'])
+    })
+})
+
+
+// Middleware to restrict requests to allowed IP addresses
+const restrictIP = (req, res, next) => {
+    const clientIP = req.ip; // Get client's IP address
+    console.log("Allowed IPs: ", allowedIPs)
+
+    // Check if the client's IP is in the allowedIPs array
+    if (allowedIPs.includes(clientIP)) {
+        // If the IP is allowed, proceed to the next middleware
+        next();
+    } else {
+        // If the IP is not allowed, send a 403 Forbidden response
+        res.status(403).render("restrictedIP")
+    }
+};
+
+// Apply the restrictIP middleware to all routes
+app.use(restrictIP);
 
 
 

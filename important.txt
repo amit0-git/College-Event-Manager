@@ -4,9 +4,9 @@ setup mongodb connection
 
 
 
-1. trusted ips
-2. register from mobile and verify using system
-3. add phone number search
+1. trusted ips    --done
+2. register from mobile and verify using system  --not imoprtant
+3. add phone number search   --done
 4. mandatory team name
 5. event close system from jc
 6. update homepage

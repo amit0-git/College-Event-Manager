@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add IP</title>
+</head>
+
+<body>
+    <%- include("partials/adminHeader"); %>
+
+        <div id="ipwrapper">
+
+
+            <div id="ipleft">
+                <h1>Add IP address</h1>
+
+                <form action="/addip" method="POST">
+
+                    <label for="">IP Address</label>
+                    <input type="text" name="ip" placeholder="IP Address" required><br>
+
+                    <label for="">PC Name</label>
+                    <input type="text" name="pcname" placeholder="PC Name" required>
+
+
+
+                    <br><br>
+
+
+                    <button type="submit">Add</button>
+
+
+                </form>
+            </div>
+
+            <div id="ipright">
+                <h1>Allowed IPs</h1>
+                <table>
+                    <tr>
+
+                        <th>PC Name</th>
+                        <th>IP Address</th>
+                        <th>Remove</th>
+
+                    </tr>
+                    <% for (const i in ipdata) {%>
+
+                        <tr>
+                            <td>
+                                <%= ipdata[i]['pcname'] %>
+                            </td>
+                            <td>
+                                <%= ipdata[i]['ip'] %>
+                            </td>
+
+                            <td><a href="/deleteIP/<%= ipdata[i]['ip'] %>" id="delA">X</a></td>
+                        </tr>
+
+
+                        <%}%>
+
+
+                </table>
+            </div>
+
+        </div>
+
+        <% if (message) {%>
+            <div class="overlay" id="popup1">
+                <div class="popup">
+
+                    <a class="close" href="#">×</a>
+                    <div class="content">
+                        <%= message %>
+                    </div>
+                </div>
+            </div>
+
+            <%}%>
+
+
+
+
+                <style>
+                    body {
+                        margin: 0;
+                        padding: 0;
+                        font-family: Arial, sans-serif;
+                    }
+
+                    h1{
+                        color: blue;
+                    }
+
+                    #ipwrapper {
+                        display: flex;
+                        justify-content: space-around;
+
+                    }
+
+                    form {
+                        display: flex;
+                        flex-direction: column;
+                    }
+
+                    label {
+                        margin-bottom: 10px;
+                        font-weight: bold;
+                    }
+
+                    input[type="text"],
+                    select,
+                    button {
+                        padding: 10px;
+                        margin-bottom: 10px;
+                        border: 1px solid #ccc;
+                        border-radius: 5px;
+
+                        transition: all 0.3s ease;
+                    }
+
+                    select {
+                        width: 100%;
+                        background-color: #f5f5f5;
+                        color: #333;
+                    }
+
+                    button {
+                        background-color: #007bff;
+                        color: #fff;
+                        cursor: pointer;
+                    }
+
+                    button:hover {
+                        background-color: #0056b3;
+                    }
+
+                    #ipleft {
+                        background-color: #fff;
+                        padding: 20px;
+                        border-radius: 8px;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                        margin: 10px;
+
+                    }
+
+
+                    /* table */
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-top: 20px;
+                    }
+
+                    th,
+                    td {
+                        padding: 8px;
+                        text-align: left;
+                        border-bottom: 1px solid #ddd;
+                    }
+
+                    th {
+                        background-color: orange;
+                        color: white;
+                        font-weight: bold;
+                    }
+
+                    tr {
+                        border-radius: 10px;
+                    }
+
+                    tr:nth-child(odd) {
+                        background-color: #FFF9C4;
+                    }
+
+                    #delA {
+                        display: inline-block;
+                        padding: 4px 8px;
+                        text-decoration: none;
+                        background-color: #ff0000;
+                        color: #fff;
+                        border-radius: 5px;
+                        transition: background-color 0.3s ease;
+                    }
+
+
+
+                    /*--------------- error box------------- */
+                    .overlay {
+                        position: absolute;
+                        top: 0;
+                        bottom: 0;
+                        left: 0;
+                        right: 0;
+                        background: rgba(0, 0, 0, 0.7);
+                        height: 100vh;
+                        overflow: hidden;
+
+
+
+
+                    }
+
+
+
+                    .popup {
+                        position: relative;
+                        margin: 70px auto;
+                        padding: 20px;
+                        background: #f11b1b;
+                        border-radius: 5px;
+                        width: 20rem;
+
+                        transition: all 5s ease-in-out;
+                    }
+
+                    .popup .close {
+                        position: absolute;
+                        top: 10px;
+                        right: 30px;
+                        transition: all 200ms;
+                        font-size: 30px;
+                        font-weight: bold;
+                        text-decoration: none;
+                        color: white;
+                    }
+
+                    .popup .close:hover {
+                        color: orange;
+                    }
+
+                    .popup .content {
+
+                        overflow: auto;
+                        color: white;
+                        font-weight: bold;
+                    }
+                </style>
+
+                <script>
+
+                    const close = document.getElementsByClassName("close")[0];
+                    const errorBox = document.getElementById("popup1")
+
+                    close.addEventListener("click", closeError);
+
+                    function closeError() {
+                        errorBox.style.display = "none";
+                    }
+                </script>
+</body>
+
+</html>

@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser');
 const router = express.Router();
 
 //import Admin midleware
-const {verifyAdmin,isAdminLoggedIn}=require('../middlewares/adminMiddleware')
+const { verifyAdmin, isAdminLoggedIn } = require('../middlewares/adminMiddleware')
 
 //USER SCHEMA
 const User = require("../databaseModels/user")
@@ -19,6 +19,10 @@ const Event = require("../databaseModels/events")
 //TYRO SCHEMA
 const TYRO = require("../databaseModels/tyro")
 
+
+//IP SCHEMA
+const IP = require("../databaseModels/ipAddress")
+
 //mongodb connection 
 mongoose.connect('mongodb://127.0.0.1:27017/users');
 
@@ -28,12 +32,13 @@ mongoose.connect('mongodb://127.0.0.1:27017/users');
 
 
 router.get("/admin", isAdminLoggedIn, async (req, res) => {
-    res.render("admin", { message: null, username:null})
+    res.render("admin", { message: null, username: null })
 })
 
 
 router.get("/tyro", verifyAdmin, async (req, res) => {
-    const msg=req.query.msg||null
+
+    const msg = req.query.msg || null
     const data = await GetTyro();
     res.render("tyro", { message: msg, username: req.user.username, user: data })
 })
@@ -112,14 +117,14 @@ router.post("/tyro", verifyAdmin, async (req, res) => {
         }
         else {
 
-          
-            const message="Already Registred!"
+
+            const message = "Already Registred!"
             console.log("TYRO EXISTS")
             return res.redirect(302, `/tyro?msg=${encodeURIComponent(message)}`)
-            
 
 
-            
+
+
         }
 
     }
@@ -200,7 +205,7 @@ async function getUsers() {
 router.get("/signup", verifyAdmin, async (req, res) => {
     //get all the users
     const users = await getUsers();
-    
+
 
 
     res.render("addRoles", { message: null, username: req.user.username, users: users })
@@ -215,7 +220,7 @@ router.get("/deleteRole/:name", verifyAdmin, async (req, res) => {
     const role = req.params.name
 
     //delete the  event from the table
-    await User.deleteOne({ username: role}).then(function () {
+    await User.deleteOne({ username: role }).then(function () {
         console.log("Role deleted"); // Success
 
         res.redirect(302, "/signup")
@@ -302,7 +307,7 @@ router.post("/addEvents", verifyAdmin, async (req, res) => {
 
 
     const evnt = req.body.event.trim()
-   // const desc = req.body.description
+    // const desc = req.body.description
     const type = req.body.typeSelect.trim()
     const venue = req.body.venue.trim()
     const time = req.body.time.trim()
@@ -359,6 +364,119 @@ router.get("/delete/:name", verifyAdmin, async (req, res) => {
 
 
 })
+
+
+
+//add allowed ips
+
+router.get("/addip", verifyAdmin, async (req, res) => {
+
+    const msg = req.query.msg || null
+    const data = await GetIPs();
+
+    res.render("addIP", { username: req.user.username, message: msg, ipdata: data })
+
+
+});
+
+
+
+//GET ALL THE IPS
+
+async function GetIPs() {
+
+    try {
+        const ip = await IP.find({})
+
+
+        return ip
+    }
+
+    catch (error) {
+        console.log(error)
+
+    }
+}
+
+
+router.post("/addip", verifyAdmin, async (req, res) => {
+
+    try {
+        const ip = req.body.ip.trim()
+        const pcname = req.body.pcname.trim();
+
+        //check whether ip is already added
+        const ipadded = await IP.findOne({ ip: ip });
+
+
+
+        if (!ipadded) {
+
+            //create tyro object
+            const newIP = new IP({
+                ip: ip,
+                pcname: pcname,
+
+
+            })
+
+            await newIP.save().then(async () => {
+                const data = await GetIPs();
+
+
+
+                res.render("addip", { message: "IP Registred!", username: req.user.username, ipdata: data })
+
+            }).catch((error) => {
+                console.log(error);
+            })
+
+
+
+
+        }
+
+
+        else {
+            //ipalready exists
+
+            const message = "IP already Registred!"
+            console.log("IP EXISTS")
+            return res.redirect(302, `/addip?msg=${encodeURIComponent(message)}`)
+
+        }
+
+
+    }
+
+    catch (error) {
+        console.log("ADD IP:", error)
+    }
+
+});
+
+
+router.get("/deleteIP/:ip", verifyAdmin, async (req, res) => {
+
+
+    const ip = req.params.ip
+
+  
+    await IP.deleteOne({ ip: ip }).then(async function () {
+        console.log("IP deleted"); // Success
+        //get ip data
+        const data = await GetIPs();
+        res.render("addip", { message: "IP Deleted!", username: req.user.username, ipdata: data })
+
+
+    }).catch(function (error) {
+        console.log("IP delete: ", error);
+    });
+
+});
+
+
+
 
 
 module.exports = router;

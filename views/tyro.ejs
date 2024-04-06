@@ -12,223 +12,231 @@
 
 
 
-  <div id="wrapper">
-    <div id="left">
-      <h1>Add Tyro Members</h1>
+    <div id="wrapper">
+      <div id="left">
+        <h1>Add Tyro Members</h1>
 
-      <form action="/tyro" method="POST">
+        <form action="/tyro" method="POST">
 
-        <label for="">Roll No</label>
-        <input type="text" name="rollno" placeholder="Roll No" required><br><br>
+          <label for="">Roll No</label>
+          <input type="text" name="rollno" placeholder="Roll No" required><br><br>
 
-        <label for="">Name</label>
-        <input type="text" name="name" placeholder="Name" required><br><br>
+          <label for="">Name</label>
+          <input type="text" name="name" placeholder="Name" required><br><br>
 
-        <label for="">Designation</label>
-        <select name="desigSelect">
+          <label for="">Designation</label>
+          <select name="desigSelect">
 
-          <option value="President">President</option>
-          <option value="Vice President">Vice President</option>
-          <option value="Secretary">Secretary</option>
-          <option value="Joint Secretary">Joint Secretary</option>
-          <option value="Treasurer">Treasurer</option>
-          <option value="Executive">Executive</option>
-          <option value="JC Volunteer">JC Volunteer</option>
-          <option value="Chairperson">Chairperson</option>
-          <option value="Cordinator">Cordinator</option>
-          <option value="JC">JC</option>
+            <option value="President">President</option>
+            <option value="Vice President">Vice President</option>
+            <option value="Secretary">Secretary</option>
+            <option value="Joint Secretary">Joint Secretary</option>
+            <option value="Treasurer">Treasurer</option>
+            <option value="Executive">Executive</option>
+            <option value="JC Volunteer">JC Volunteer</option>
+            <option value="Chairperson">Chairperson</option>
+            <option value="Cordinator">Cordinator</option>
+            <option value="JC">JC</option>
 
-        </select>
-        <br><br>
+          </select>
+          <br><br>
 
-        <button type="submit">Add</button>
+          <button type="submit">Add</button>
 
 
-      </form>
+        </form>
 
-      <% if (message){ %>
-      <div id="error" class="error-message">
-        <%= message %>
+        <% if (message){ %>
+          <div id="error" class="error-message">
+            <%= message %>
+          </div>
+
+          <% } %>
       </div>
 
-      <% } %>
-    </div>
+      <div id="right">
+        <h1>Members</h1>
+        <table>
+          <tr>
+            <th>Roll No</th>
+            <th>Name</th>
+            <th>Designation</th>
+            <th>Delete</th>
 
-    <div id="right">
-      <h1>Members</h1>
-      <table>
-        <tr>
-          <th>Roll No</th>
-          <th>Name</th>
-          <th>Designation</th>
-          <th>Delete</th>
+          </tr>
+          <% for (const i in user) {%>
 
-        </tr>
-        <% for (const i in user) {%>
-
-        <tr>
-          <td><%= user[i]['rollno'] %></td>
-          <td><%= user[i]['name'] %></td>
-          <td><%= user[i]['designation'] %></td>
-          <td><a href="/deleteTyro/<%= user[i]['rollno'] %>" id="delA">X</a></td>
-        </tr>
+            <tr>
+              <td>
+                <%= user[i]['rollno'] %>
+              </td>
+              <td>
+                <%= user[i]['name'] %>
+              </td>
+              <td>
+                <%= user[i]['designation'] %>
+              </td>
+              <td><a href="/deleteTyro/<%= user[i]['rollno'] %>" id="delA">X</a></td>
+            </tr>
 
 
-        <%}%>
+            <%}%>
 
 
         </table>
 
+      </div>
     </div>
-  </div>
 
 
 
-  <style>
-    #delA {
-      display: inline-block;
-      padding: 1px 8px 1px 8px;
-      text-decoration: none;
-      background-color: #ff0000;
-      color: #fff;
-      border-radius: 5px;
-      transition: background-color 0.3s ease;
-    }
-   .error-message {
-      max-width: 500px;
-      margin: 20px auto;
-      padding: 15px;
-      background-color: #ef3141;
-      /* Red or any other error color */
-      color: white;
-      /* Text color for error message */
-      border: 1px solid #f5c6cb;
-      /* Border color */
-      border-radius: 5px;
-      text-align: center;
-      font-size: 16px;
-      box-sizing: border-box;
-    }
+    <style>
+      #delA {
+        display: inline-block;
+        padding: 1px 8px 1px 8px;
+        text-decoration: none;
+        background-color: #ff0000;
+        color: #fff;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+      }
 
-body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-}
+      .error-message {
+        max-width: 500px;
+        margin: 20px auto;
+        padding: 15px;
+        background-color: #ef3141;
+        /* Red or any other error color */
+        color: white;
+        /* Text color for error message */
+        border: 1px solid #f5c6cb;
+        /* Border color */
+        border-radius: 5px;
+        text-align: center;
+        font-size: 16px;
+        box-sizing: border-box;
+      }
 
-#wrapper {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 20px;
-}
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+      }
 
-#left{
-  background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin: 10px;
-    height: 520px;
-}
-#right {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin: 10px;
-    width: 700px;
-    overflow-y: scroll;
-    overflow-x: hidden;
-}
+      #wrapper {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 20px;
+      }
 
-h1 {
-    
-    margin-bottom: 20px;
-    text-align: center;
-    color:blue;
-    
-}
+      #left {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin: 10px;
+        height: 520px;
+      }
 
-form {
-    display: flex;
-    flex-direction: column;
-}
+      #right {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin: 10px;
+        width: 700px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+      }
 
-label {
-    margin-bottom: 10px;
-    font-weight: bold;
-}
+      h1 {
 
-input[type="text"],
-select,
-button {
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    
-    transition: all 0.3s ease;
-}
+        margin-bottom: 20px;
+        text-align: center;
+        color: blue;
 
-select {
-    width: 100%;
-    background-color: #f5f5f5;
-    color: #333;
-}
+      }
 
-button {
-    background-color: #007bff;
-    color: #fff;
-    cursor: pointer;
-}
+      form {
+        display: flex;
+        flex-direction: column;
+      }
 
-button:hover {
-    background-color: #0056b3;
-}
+      label {
+        margin-bottom: 10px;
+        font-weight: bold;
+      }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-   
-}
-tr{
-  border-radius: 10px;
-}
+      input[type="text"],
+      select,
+      button {
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
 
-th,
-td {
-    padding: 8px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-td{
-  font-size: 14px;
-}
+        transition: all 0.3s ease;
+      }
 
-th {
-    background-color:orange;
-    color: white;
-    font-weight: bold;
-}
-tr:nth-child(odd){
-      background-color: #FFF9C4;
-    }
+      select {
+        width: 100%;
+        background-color: #f5f5f5;
+        color: #333;
+      }
 
-a {
-    text-decoration: none;
-    color: #ff4d4d;
-    font-weight: bold;
-}
+      button {
+        background-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+      }
 
-a:hover {
-    color: #ff1a1a;
-}
+      button:hover {
+        background-color: #0056b3;
+      }
 
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
 
+      }
 
-  </style>
+      tr {
+        border-radius: 10px;
+      }
+
+      th,
+      td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+
+      td {
+        font-size: 14px;
+      }
+
+      th {
+        background-color: orange;
+        color: white;
+        font-weight: bold;
+      }
+
+      tr:nth-child(odd) {
+        background-color: #FFF9C4;
+      }
+
+      a {
+        text-decoration: none;
+        color: #ff4d4d;
+        font-weight: bold;
+      }
+
+      a:hover {
+        color: #ff1a1a;
+      }
+    </style>
 </body>
 
 </html>

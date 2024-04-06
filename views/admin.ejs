@@ -10,120 +10,120 @@
 <body>
   <%- include("partials/header"); %>
 
-  <div id="wrapper">
-    <div id="formWrapper">
-      <img src="/assets/admin.png" alt="" id="user">
-      <h1>Admin Login</h1>
+    <div id="wrapper">
+      <div id="formWrapper">
+        <img src="/assets/admin.png" alt="" id="user">
+        <h1>Admin Login</h1>
 
-      <form action="/admin" method="POST">
+        <form action="/admin" method="POST">
 
-        <label for="">Username</label><br>
-        <input type="text" name="username" placeholder="Username" required><br>
+          <label for="">Username</label><br>
+          <input type="text" name="username" placeholder="Username" required><br>
 
-        <label for="">Password</label><br>
-        <input type="password" name="password" placeholder="Password" required><br>
+          <label for="">Password</label><br>
+          <input type="password" name="password" placeholder="Password" required><br>
 
 
-        <br>
-        <button type="submit">Login</button>
-      </form>
+          <br>
+          <button type="submit">Login</button>
+        </form>
+      </div>
+
+
+      <% if (message) {%>
+        <div id="loginInfo" class="error-message">
+          <%= message %>
+        </div>
+        <% } %>
+
     </div>
 
 
-    <% if (message) {%>
-    <div id="loginInfo" class="error-message">
-      <%= message %>
-    </div>
-    <%  } %>
-
-  </div>
+    <%- include("partials/developerStrip"); %>
 
 
-<%- include("partials/developerStrip"); %>
+      <style>
+        .error-message {
+          max-width: 500px;
+          margin: 20px auto;
+          padding: 15px;
+          background-color: #ef3141;
+          /* Red or any other error color */
+          color: white;
+          /* Text color for error message */
+          border: 1px solid #f5c6cb;
+          /* Border color */
+          border-radius: 5px;
+          text-align: center;
+          font-size: 16px;
+          box-sizing: border-box;
+        }
 
+        /* CSS for styling */
+        #user {
+          width: 100px;
+          height: 100px;
+        }
 
-  <style>
-    .error-message {
-      max-width: 500px;
-      margin: 20px auto;
-      padding: 15px;
-      background-color: #ef3141;
-      /* Red or any other error color */
-      color: white;
-      /* Text color for error message */
-      border: 1px solid #f5c6cb;
-      /* Border color */
-      border-radius: 5px;
-      text-align: center;
-      font-size: 16px;
-      box-sizing: border-box;
-    }
+        body {
+          margin: 0;
+          padding: 0;
+          font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 
-    /* CSS for styling */
-    #user {
-      width: 100px;
-      height: 100px;
-    }
+        }
 
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        #wrapper {
+          display: flex;
+          margin-top: 40px;
+          align-items: center;
+          flex-direction: column;
+          height: 90vh;
+        }
 
-    }
+        #formWrapper {
+          width: 300px;
+          text-align: center;
+          background-color: #fff;
+          padding: 20px;
+          border-radius: 5px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-    #wrapper {
-      display: flex;
-      margin-top: 40px;
-      align-items: center;
-      flex-direction: column;
-      height: 90vh;
-    }
+        h1 {
+          font-size: 24px;
+          margin-bottom: 20px;
+        }
 
-    #formWrapper {
-      width: 300px;
-      text-align: center;
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
+        label {
+          display: block;
+          margin-bottom: 10px;
+          margin-top: 10px;
+          font-weight: bold;
+          text-align: left;
+        }
 
-    h1 {
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
+        input[type="text"],
+        input[type="password"],
+        button {
+          width: calc(100% - 22px);
+          padding: 10px;
+          /* margin-bottom: 10px; */
+          border-radius: 3px;
+          border: 1px solid #ccc;
 
-    label {
-      display: block;
-      margin-bottom: 10px;
-      margin-top: 10px;
-      font-weight: bold;
-      text-align: left;
-    }
+        }
 
-    input[type="text"],
-    input[type="password"],
-    button {
-      width: calc(100% - 22px);
-      padding: 10px;
-      /* margin-bottom: 10px; */
-      border-radius: 3px;
-      border: 1px solid #ccc;
+        button {
+          background-color: #007bff;
+          color: #fff;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+        }
 
-    }
-
-    button {
-      background-color: #007bff;
-      color: #fff;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-  </style>
+        button:hover {
+          background-color: #0056b3;
+        }
+      </style>
 
 </body>
 

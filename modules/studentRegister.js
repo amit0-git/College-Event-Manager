@@ -299,6 +299,19 @@ async function getStudentDataPID(pid) {
                 return false
             }
         }
+
+
+        else if (pid1!="P"  || pid1!="T"){
+
+            const student = await Individual.findOne({ phone: pid })
+            if (student) {
+                return student
+            }
+            else {
+                return false
+            }
+
+        }
         else {
 
             const student = await Individual.findOne({ rollno: pid.toUpperCase() })
