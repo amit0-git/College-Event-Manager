@@ -1,6 +1,7 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 
+  <!-- fontawesome icon cdn -->
+  <script src="https://kit.fontawesome.com/04fd96b6f4.js" crossorigin="anonymous"></script>
 
 
 
@@ -25,14 +26,14 @@
     </div>
 
     <div class="nav__link hide">
-      <a href="/">Home</a>
-      <a href="/register">PID</a>
-      <a href="/tid">TID</a>
-      <a href="jcLogin">JC Panel</a>
-      <a href="/admin">Admin</a>
-      <a href="/barcode">Scan ID</a>
+      <a href="/"><i class="fa-solid fa-house" style="font-size:16px; margin-right: 5px"></i>Home</a>
+      <a href="/register"><i class="fas fa-user" style="font-size:16px; margin-right: 5px"></i>PID</a>
+      <a href="/tid"><i class="fas fa-users" style="font-size:16px; margin-right: 5px"></i>TID</a>
+      <a href="jcLogin"><i class="fa-solid fa-scale-balanced" style="font-size:16px; margin-right: 5px"></i>JC Panel</a>
+      <a href="/admin"><i class="fas fa-tools" style="font-size:16px; margin-right: 5px"></i>Admin</a>
+      <a href="/barcode"><i class="fas fa-barcode" style="font-size:16px; margin-right: 5px"></i>Scan ID</a>
       <% if (username) { %>
-      <a href="/logout">Log Out</a>
+      <a href="/logout"><i class="fas fa-sign-out-alt" style="font-size:16px; margin-right: 5px"></i>Log Out</a>
       <% } %>
 
       <form action="print" method="get" id="print">
@@ -53,9 +54,10 @@
   a {
     text-decoration: none;
     color: black;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: bold;
     text-transform: uppercase;
+    
   }
 
   .nav {

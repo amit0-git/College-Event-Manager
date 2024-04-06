@@ -22,63 +22,65 @@
 
         <form action="/register" method="post">
 
-          <label for="rollno">Roll No/Reg. No</label>
-          <input type="text" name="rollno" id="rollno" required value="<%= barcode ? barcode['roll'] : '' %>">
-          <br>
+     
 
-          <label for="name">Name</label>
-          <input type="text" name="name" id="name" required value="<%= barcode ? barcode['name'] : '' %>">
-          <br>
+                <label for="rollno">Roll No/Reg. No</label>
+                <input type="text" name="rollno" id="rollno" required value="<%= barcode ? barcode['roll'] : '' %>">
+                <br>
 
-          <label for="phone">Phone</label>
-          <input type="text" name="phone" id="phone" required value="<%= barcode ? barcode['phone'] : '' %>">
-          <br>
-          <label for="college">College</label>
-          <select name="collegeSelect">
-            <option value="SRMS CET">SRMS CET</option>
-            <option value="SRMS CETR">SRMS CETR</option>
-            <option value="SRMS IBS">SRMS IBS</option>
+                <label for="name">Name</label>
+                <input type="text" name="name" id="name" required value="<%= barcode ? barcode['name'] : '' %>">
+                <br>
 
-            <option value="SRMS IMS">SRMS IMS</option>
-            <option value="SRMS Law">SRMS Law</option>
-            <option value="SRMS Nursing">SRMS Nursing</option>
-            <option value="SRMS Unnao">SRMS Unnao</option>
-            <option value="SRMS IPS">SRMS IPS</option>
-            <option value="Other">Other</option>
+                <label for="phone">Phone</label>
+                <input type="text" name="phone" id="phone" required value="<%= barcode ? barcode['phone'] : '' %>">
+                <br>
+                <label for="college">College</label>
+                <select name="collegeSelect">
+                  <option value="SRMS CET">SRMS CET</option>
+                  <option value="SRMS CETR">SRMS CETR</option>
+                  <option value="SRMS IBS">SRMS IBS</option>
 
-          </select><br>
+                  <option value="SRMS IMS">SRMS IMS</option>
+                  <option value="SRMS Law">SRMS Law</option>
+                  <option value="SRMS Nursing">SRMS Nursing</option>
+                  <option value="SRMS Unnao">SRMS Unnao</option>
+                  <option value="SRMS IPS">SRMS IPS</option>
+                  <option value="Other">Other</option>
 
-          <label for="branch">Branch</label>
-          <select name="branchSelect">
-            <option value="CSE">CSE</option>
-            <option value="IT">IT</option>
-            <option value="EN">EN</option>
-            <option value="EC">EC</option>
-            <option value="ME">ME</option>
-            <option value="B Pharma">B Pharma</option>
-            <option value="MBA">MBA</option>
-            <option value="MCA">MCA</option>
+                </select><br>
 
-            <option value="Medical">Medical</option>
+                <label for="branch">Branch</label>
+                <select name="branchSelect">
+                  <option value="CSE">CSE</option>
+                  <option value="IT">IT</option>
+                  <option value="EN">EN</option>
+                  <option value="EC">EC</option>
+                  <option value="ME">ME</option>
+                  <option value="B Pharma">B Pharma</option>
+                  <option value="MBA">MBA</option>
+                  <option value="MCA">MCA</option>
 
-            <option value="Other">Other</option>
-          </select>
+                  <option value="Medical">Medical</option>
 
-
-
-          <label for="year">Year</label>
-          <select name="yearSelect">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-
-          </select>
+                  <option value="Other">Other</option>
+                </select>
 
 
-          <br>
-          <button type="submit">Register</button>
+
+                <label for="year">Year</label>
+                <select name="yearSelect">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+
+                </select>
+
+
+                <br>
+                <button type="submit">Register</button>
         </form>
 
 
@@ -142,7 +144,7 @@
 
           <h1>Add Events</h1>
           <p id="piddesc">
-            Events are displayed after searching PID, Roll No or Phone
+            Events are displayed after searching PID, Roll No. or Phone
           </p>
           <!-- add update event form -->
 
@@ -188,18 +190,14 @@
     </div>
 
 
-    <!-- <% if (message) {%>
-      <div id="registerInfo" class="error-message">
-        <%= message %>
-      </div>
-      <%}%> -->
+
 
 
     <% if (message) {%>
-      <div id="popup1" class="overlay">
+      <div  class="overlay" id="popup1">
         <div class="popup">
 
-          <a class="close" href="#popup1">×</a>
+          <a class="close" href="#">×</a>
           <div class="content">
             <%= message %>
           </div>
@@ -265,6 +263,7 @@
           label {
             margin-bottom: 2px;
             font-weight: bold;
+            color: rgb(117, 117, 117);
           }
 
           input,

@@ -104,8 +104,18 @@ async function getEventTID(pid) {
 
 }
 
+
+
+
+
+
+
+
 //route to generate pdf 
 router.get("*/print", async (req, res) => {
+
+    console.log("/print",req.originalUrl)
+
     let pid = req.query.pid
     pid = pid.toUpperCase()
 
@@ -157,7 +167,7 @@ router.get("*/print", async (req, res) => {
 
 
 
-    res.render("pdf", { individualData: student, indiEvents: eventsIndi, teamEvents: eventsTeam });
+    res.render("pdf", {username:null, individualData: student, indiEvents: eventsIndi, teamEvents: eventsTeam });
 
 })
 
@@ -189,18 +199,20 @@ router.post("/barcode", (req, res) => {
 
 
 router.get("/register", verifyUser, async (req, res) => {
+
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     const msg = req.query.msg || null;
 
-    let barcodeData=req.query.jsonData||null;
+    let barcodeData=req.query.jsonData|| null;
 
-    if (barcodeData){
+    if (barcodeData != null){
         barcodeData=JSON.parse(req.query.jsonData)
     }
 
 
 
-    console.log(barcodeData)
+
+    console.log("Barcode data"+barcodeData)
 
 
     res.render("register", { username: req.user.username, message: msg, student: null, event: null,barcode:barcodeData })
@@ -372,7 +384,7 @@ router.post("/pid", verifyUser, async (req, res) => {
 
     console.log(Pid, student)
 
-    res.render("register", { username: req.user.username, message: null, student: student, event: individualEvents });
+    res.render("register", { username: req.user.username, message: null, student: student, event: individualEvents,barcode:null });
 
 
 
@@ -1048,7 +1060,7 @@ async function userParticipationValidation(req, res, next) {
 
 router.post("/updateEvent/:id", verifyUser, userParticipationValidation, async (req, res) => {
 
-
+    console.log("/updateEvent called",req.originalUrl)
 
     // if no event is selected then it is undefined so set it to empty array
 
@@ -1070,7 +1082,9 @@ router.post("/updateEvent/:id", verifyUser, userParticipationValidation, async (
         const update = await Individual.updateOne({ pid: pid }, { $set: { singleEvent: events } }).then(async () => {
             const student = await getStudentDataPID(pid) || null;
 
-            res.render("register", { username: req.user.username, message: "Events Updated Sucessfully!", student: student, event: individualEvents });
+            console.log("/updateEvent called",req.originalUrl)
+
+            res.render("register", { username: req.user.username, message: "Events Updated Sucessfully!", student: student, event: individualEvents ,barcode:null});
         });
 
     } catch (error) {
@@ -1080,10 +1094,20 @@ router.post("/updateEvent/:id", verifyUser, userParticipationValidation, async (
 
 
 
+
+
+
 })
 
 
 router.post("/register", verifyUser, async (req, res) => {
+
+
+    let barcodeData=req.query.jsonData|| null;
+
+    if (barcodeData != null){
+        barcodeData=JSON.parse(req.query.jsonData)
+    }
 
     const rollno = req.body.rollno.trim()
     const name = req.body.name.trim()
