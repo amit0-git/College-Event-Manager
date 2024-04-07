@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halt Registration</title>
+</head>
+
+<body>
+    <%- include("partials/adminHeader"); %>
+    <h1>Stop Event Registration</h1>
+
+        <div id="haltcontainer">
+
+            <div id="haltwrapper">
+                <div id="left">
+
+                    <h2>Individual Events</h2>
+
+
+
+
+                    <table>
+                        <tr>
+                            <th>Event</th>
+                            <th>Venue</th>
+                            <th>Timings</th>
+                            <th>Halt</th>
+
+                        </tr>
+                        <% for (const i in indi) { %>
+
+
+                            <tr>
+                                <td>
+                                    <%= indi[i]['event'] %>
+                                </td>
+                                <td>
+                                    <%= indi[i]['venue'] %>
+                                </td>
+                                <td>
+                                    <%= indi[i]['time'] %>
+                                </td>
+                                <td> <input type="checkbox" class="checkbox" value="<%= indi[i]['event'] %>" <%
+                                        if(indi[i]['halt']==1) { %> checked <% } %>></td>
+
+                            </tr>
+
+                            <% } %>
+
+
+                    </table>
+
+                </div>
+
+                <div id="right">
+                    <h2>Team Events</h2>
+                    <table>
+                        <tr>
+                            <th>Event</th>
+                            <th>Venue</th>
+                            <th>Timings</th>
+
+                            <th>Halt</th>
+
+                        </tr>
+                        <% for (const i in team) { %>
+
+
+                            <tr>
+                                <td>
+                                    <%= team[i]['event'] %>
+                                </td>
+                                <td>
+                                    <%= team[i]['venue'] %>
+                                </td>
+                                <td>
+                                    <%= team[i]['time'] %>
+                                </td>
+
+                                <td><input type="checkbox" class="checkbox" value="<%= team[i]['event'] %>" <%
+                                        if(team[i]['halt']===1) { %> checked <% } %>></td>
+
+                            </tr>
+
+                            <% } %>
+
+
+                    </table>
+                </div>
+            </div>
+
+
+            <div id="haltbtn">Halt</div>
+        </div>
+
+
+
+        <style>
+            h1{
+                text-align: center;
+                color: red;
+            }
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+            }
+
+            #haltcontainer {
+                display: flex;
+                flex-direction: column;
+                /* justify-content: center; */
+                align-items: center;
+                width: 100%;
+
+            }
+
+            #haltwrapper {
+                display: grid;
+                grid-template-columns: repeat(2, max-content);
+                justify-content: space-around;
+            }
+
+            #left {
+                margin-right: 20px;
+            }
+
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+
+            th,
+            td {
+                padding: 8px;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+
+            }
+
+            td {
+                font-size: 13px;
+            }
+
+            th {
+                background-color: orange;
+                color: white;
+                font-weight: bold;
+            }
+
+
+
+            tr {
+                border-radius: 10px;
+            }
+
+            tr:nth-child(even) {
+                background-color: #FFF9C4;
+            }
+
+            #haltbtn {
+                padding: 10px;
+                width: 150px;
+                background-color: red;
+                color: white;
+                text-align: center;
+                margin-top: 40px;
+                border-radius: 5px;
+            }
+
+            #haltbtn:hover {
+                background-color: rgb(244, 67, 67);
+                cursor: pointer;
+            }
+        </style>
+
+
+
+        <script>
+            const server = "localhost";
+
+            const haltbtn = document.getElementById("haltbtn");
+
+
+
+            haltbtn.addEventListener("click", haltEvent);
+
+
+            async function haltEvent() {
+                const checkboxes = document.querySelectorAll(".checkbox:checked");
+                const checkedValues = [];
+                checkboxes.forEach((checkbox) => {
+                    checkedValues.push(checkbox.value);
+                });
+
+
+
+
+                const options = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+
+                    },
+                    body: JSON.stringify({
+                        event: checkedValues
+
+                    })
+                };
+
+                try {
+
+                    const send = await fetch("http://" + server + ":3000/halt", options).then(response => response.json())
+                    // .then(async result => {
+
+
+
+
+
+                    //     console.log('POST request successful:', result);
+
+
+
+                    // })
+                    // .catch(error => {
+                    //     console.error('Error during POST request:', error);
+                    // });
+
+
+                } catch (error) {
+                    console.log(error)
+                }
+
+
+                console.log(checkedValues);
+            }
+        </script>
+</body>
+
+</html>

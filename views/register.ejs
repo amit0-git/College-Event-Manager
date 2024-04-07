@@ -22,65 +22,65 @@
 
         <form action="/register" method="post">
 
-     
-
-                <label for="rollno">Roll No/Reg. No</label>
-                <input type="text" name="rollno" id="rollno" required value="<%= barcode ? barcode['roll'] : '' %>">
-                <br>
-
-                <label for="name">Name</label>
-                <input type="text" name="name" id="name" required value="<%= barcode ? barcode['name'] : '' %>">
-                <br>
-
-                <label for="phone">Phone</label>
-                <input type="text" name="phone" id="phone" required value="<%= barcode ? barcode['phone'] : '' %>">
-                <br>
-                <label for="college">College</label>
-                <select name="collegeSelect">
-                  <option value="SRMS CET">SRMS CET</option>
-                  <option value="SRMS CETR">SRMS CETR</option>
-                  <option value="SRMS IBS">SRMS IBS</option>
-
-                  <option value="SRMS IMS">SRMS IMS</option>
-                  <option value="SRMS Law">SRMS Law</option>
-                  <option value="SRMS Nursing">SRMS Nursing</option>
-                  <option value="SRMS Unnao">SRMS Unnao</option>
-                  <option value="SRMS IPS">SRMS IPS</option>
-                  <option value="Other">Other</option>
-
-                </select><br>
-
-                <label for="branch">Branch</label>
-                <select name="branchSelect">
-                  <option value="CSE">CSE</option>
-                  <option value="IT">IT</option>
-                  <option value="EN">EN</option>
-                  <option value="EC">EC</option>
-                  <option value="ME">ME</option>
-                  <option value="B Pharma">B Pharma</option>
-                  <option value="MBA">MBA</option>
-                  <option value="MCA">MCA</option>
-
-                  <option value="Medical">Medical</option>
-
-                  <option value="Other">Other</option>
-                </select>
 
 
+          <label for="rollno">Roll No/Reg. No</label>
+          <input type="text" name="rollno" id="rollno" required value="<%= barcode ? barcode['roll'] : '' %>">
+          <br>
 
-                <label for="year">Year</label>
-                <select name="yearSelect">
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
+          <label for="name">Name</label>
+          <input type="text" name="name" id="name" required value="<%= barcode ? barcode['name'] : '' %>">
+          <br>
 
-                </select>
+          <label for="phone">Phone</label>
+          <input type="text" name="phone" id="phone" required value="<%= barcode ? barcode['phone'] : '' %>">
+          <br>
+          <label for="college">College</label>
+          <select name="collegeSelect">
+            <option value="SRMS CET">SRMS CET</option>
+            <option value="SRMS CETR">SRMS CETR</option>
+            <option value="SRMS IBS">SRMS IBS</option>
+
+            <option value="SRMS IMS">SRMS IMS</option>
+            <option value="SRMS Law">SRMS Law</option>
+            <option value="SRMS Nursing">SRMS Nursing</option>
+            <option value="SRMS Unnao">SRMS Unnao</option>
+            <option value="SRMS IPS">SRMS IPS</option>
+            <option value="Other">Other</option>
+
+          </select><br>
+
+          <label for="branch">Branch</label>
+          <select name="branchSelect">
+            <option value="CSE">CSE</option>
+            <option value="IT">IT</option>
+            <option value="EN">EN</option>
+            <option value="EC">EC</option>
+            <option value="ME">ME</option>
+            <option value="B Pharma">B Pharma</option>
+            <option value="MBA">MBA</option>
+            <option value="MCA">MCA</option>
+
+            <option value="Medical">Medical</option>
+
+            <option value="Other">Other</option>
+          </select>
 
 
-                <br>
-                <button type="submit">Register</button>
+
+          <label for="year">Year</label>
+          <select name="yearSelect">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+
+          </select>
+
+
+          <br>
+          <button type="submit">Register</button>
         </form>
 
 
@@ -159,15 +159,21 @@
                   <% if (i % 2===0) { %>
                     <div class="row">
                       <% } %>
-                        <label class="checkbox-label">
-                          <input type="checkbox" class="styled-checkbox" name="events" value="<%= event[i].event %>" <%
-                            if (student.singleEvent.includes(event[i].event)){ %> checked <% } %>>
-                            <span id="checkcontent">
-                              <%= event[i].event %>
-                            </span>
 
-                        </label>
-                        <% if (i % 2===1 || i==event.length - 1) { %>
+                      <!-- stop the event registration when closed by JC committee -->
+                        <% if(event[i].halt==0 ){ %>
+
+                          <label class="checkbox-label">
+                            <input type="checkbox" class="styled-checkbox" name="events" value="<%= event[i].event %>"
+                              <% if (student.singleEvent.includes(event[i].event)){ %> checked <% } %>>
+                              <span id="checkcontent">
+                                <%= event[i].event %>
+                              </span>
+
+                              <% } %>
+
+                          </label>
+                          <% if (i % 2===1 || i==event.length - 1) { %>
                     </div>
                     <!-- Close the row after the second checkbox or when reaching the last checkbox -->
                     <% } %>
@@ -194,7 +200,7 @@
 
 
     <% if (message) {%>
-      <div  class="overlay" id="popup1">
+      <div class="overlay" id="popup1">
         <div class="popup">
 
           <a class="close" href="#">×</a>

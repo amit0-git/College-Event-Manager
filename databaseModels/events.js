@@ -24,6 +24,10 @@ const eventSchema = new mongoose.Schema({
   },
   limit:{
     type:Number
+  },
+  halt:{
+    type:Number,
+    default:0
   }
 });
 

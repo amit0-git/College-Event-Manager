@@ -461,7 +461,7 @@ router.get("/deleteIP/:ip", verifyAdmin, async (req, res) => {
 
     const ip = req.params.ip
 
-  
+
     await IP.deleteOne({ ip: ip }).then(async function () {
         console.log("IP deleted"); // Success
         //get ip data
@@ -475,6 +475,43 @@ router.get("/deleteIP/:ip", verifyAdmin, async (req, res) => {
 
 });
 
+
+
+router.get("/halt", verifyAdmin, async (req, res) => {
+
+    const events = await getEvents();
+
+
+    res.render("haltRegistration", { username: req.user.username, indi: events['individual'], team: events['team'] })
+})
+
+
+
+router.post("/halt", verifyAdmin, async (req, res) => {
+    const haltEvents = req.body.event;
+
+
+    try {
+        // Update all documents setting halt to 0
+        await Event.updateMany({}, { $set: { halt: 0 } });
+
+        for (const elem of haltEvents) {
+            await Event.updateOne({ event: elem }, { $set: { halt: 1 } });
+        }
+
+        console.log(haltEvents);
+
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+
+    console.log(haltEvents)
+    res.send(haltEvents)
+
+
+});
 
 
 

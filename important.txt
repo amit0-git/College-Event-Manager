@@ -3,11 +3,17 @@ setup mongodb connection
 
 
 
+for working in mobile update actual ip
+
+
+
 
 1. trusted ips    --done
 2. register from mobile and verify using system  --not imoprtant
 3. add phone number search   --done
-4. mandatory team name
-5. event close system from jc
-6. update homepage
-7. add dev info
+4. mandatory team name   --done
+5. event close system from jc   --done
+6. update homepage    
+7. add dev info   --not important
+
+8. add docker
