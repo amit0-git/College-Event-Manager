@@ -5,11 +5,6 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 
 
-
-
-
-
-
 //modules 
 const authRoutes = require('./modules/auth');
 const studentRoutes = require('./modules/studentRegister');
